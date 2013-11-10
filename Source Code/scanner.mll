@@ -12,7 +12,7 @@ rule token = parse
 | "//"     { INTDIVIDE }
 | '%'      { MOD }
 | '='      { ASSIGN }
-| '`'      { DERIV }
+| '\''      { DERIV }
 | '@'      { INTEG }
 | "sqrt"   { SQRT }
 | "sin"    { SIN }
