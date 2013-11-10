@@ -1,0 +1,6 @@
+function B [int b] returns int
+{ 
+  int a;
+  int a;
+ return 0;
+}

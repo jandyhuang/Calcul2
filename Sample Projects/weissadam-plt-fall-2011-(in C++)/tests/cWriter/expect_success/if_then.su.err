@@ -1,0 +1,2 @@
+test.cpp: In function ‘int _test1(int)’:
+test.cpp:10: warning: statement has no effect

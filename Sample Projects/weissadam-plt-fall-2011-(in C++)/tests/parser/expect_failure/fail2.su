@@ -1,0 +1,5 @@
+function B [int b] returns int
+{ 
+	B = {b*2 | b in {y+1 z | y in a}};
+return 0;
+}

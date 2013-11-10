@@ -1,0 +1,11 @@
+function main [ ] returns bool
+{
+  if ( yup ) then
+  {
+    return yup;
+  }
+  else
+  {
+    return nope;
+  }
+}

@@ -1,0 +1,7 @@
+function B [int b] returns int
+{ 
+ set a = { 0.0, 0.5, 1.0, 1.5 };
+ string c = "a";
+ set B = {(d,e) | d in a, e in c};
+ return 0;
+}

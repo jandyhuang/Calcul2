@@ -1,0 +1,19 @@
+function B [int b] returns int
+{ 
+
+ int i;
+ set a = { 0.0, 0.5, 1.0, 1.5 };
+ set c = { "a", "b", "c" };
+ set C = {(d,e) | d in { "a", "b", "c" }, e in { "a", "b", "c" }};
+ set D = {("a", "a"), ("b", "b"), ("c", "c")};
+
+ if ( C == D ) then
+ {
+   return 0;
+ }
+ else
+ {
+   return 1;
+ } 
+
+}

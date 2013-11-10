@@ -1,0 +1,21 @@
+function main[] returns int {
+	int a1 = 21;
+	int a2 = 21;
+
+	int m1 = 7;
+	int m2 = 6;
+	
+	int s1 = 45;
+	int s2 = 3;
+	
+	int d1 = 84;
+	int d2 = 2;
+
+	print(a1+a2);
+	print(m1*m2);
+	print(s1 - s2);
+	print(d1/d2);
+	print(d1//d2);
+	
+	return 0;
+	}

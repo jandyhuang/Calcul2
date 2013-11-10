@@ -1,0 +1,8 @@
+function main[] returns int
+	{
+	int a = 42//4;
+
+	print(a);
+
+	return 0;
+	}

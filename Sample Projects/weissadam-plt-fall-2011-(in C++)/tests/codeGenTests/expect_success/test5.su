@@ -1,0 +1,7 @@
+function main[int a] returns int 
+{
+	int b = a;
+	b = 1;
+	b = 3;
+	return b;
+}

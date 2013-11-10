@@ -1,0 +1,13 @@
+function getVal[] returns float{
+	return 1.5;
+	}
+
+function main[] returns int{
+	print(40.5+getVal());
+	print(43.5 - getVal());
+	print(28.0*getVal());
+	print(63.0/getVal());
+	print(64.0//getVal());
+
+	return 0;
+	}

@@ -1,0 +1,19 @@
+function main[] returns int {
+	float a = .1;
+	float b = 420.0;
+	float c = 41.5;
+	float d = .5;
+	float e = 43.5;
+	float f = 1.5;
+	float g = 42.7;
+	float h = 1.0;
+	float i = 4.62;
+	float j = .11;
+
+	print(a*b);
+	print(c+d);
+	print(e-f);
+	print(g//h);
+	print(i/j);
+	return 0;
+	}

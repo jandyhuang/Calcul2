@@ -1,0 +1,12 @@
+function first[] returns int
+{
+  return 1;
+}
+function second[] returns int
+{
+  return first();
+}
+function main[] returns string
+{
+  return second();
+}

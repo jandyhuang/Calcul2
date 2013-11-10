@@ -1,0 +1,1 @@
+Fatal error: exception Validation.TypeError("type mismatch: var: b declared type: string expression type: int")

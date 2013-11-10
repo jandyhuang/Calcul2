@@ -1,0 +1,21 @@
+function setDiff [set S1, set S2] returns set {
+
+	set RetSet = S1 union S2;
+	set Iset = S1 intersect S2;
+
+	RetSet = RetSet minus Iset;
+	
+	return RetSet;
+}
+
+function main [] returns int {
+
+	set A = {1,2,3,4};
+	set B = {3,4,5,6};
+	set C = setDiff(A,B);
+
+	print(C);
+
+	return 0;
+
+}

@@ -1,0 +1,11 @@
+function first[] returns int
+{
+  /* ERROR: second() undefined */
+  second();
+ return 0;
+}
+function second[] returns int
+{
+ first();
+ return 0;
+}

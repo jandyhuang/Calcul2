@@ -1,0 +1,14 @@
+int a;
+float b;
+set c;
+string d;
+tuple e;
+bool f;
+
+function B[int b] returns int
+{
+a = 0;
+return 0;
+}
+
+

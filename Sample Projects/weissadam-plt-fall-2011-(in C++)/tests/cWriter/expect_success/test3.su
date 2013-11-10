@@ -1,0 +1,8 @@
+function main[] returns int
+{
+	string ret;
+	if(3 < 0) then {ret = "negative";}
+	else {ret = "non-negative";}
+	print(ret);
+	return 0;
+}

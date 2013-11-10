@@ -1,0 +1,5 @@
+function main [ int l, int r ] returns int
+{
+  int a;
+  return 0;
+}

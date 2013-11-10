@@ -1,0 +1,50 @@
+\chapter{Compiler Architecture}
+The compiler consists of 5 principal components: Scanner, Parser, Validator, Code Generator and Set Class.  The Scanner receives input in the form of plain text files with \verb|.su| suffix and the compiler generates valid cpp code.  
+
+The Code Generator uses the concrete parse tree generated from the Parser to output valid C++ code.  A polymorphic class hierarchy was implemented in C++ (Set Class component) to implement complicated Tuple and Set types.
+
+The following lays out who worked on the various component implementations:
+
+\begin{center}
+\begin{tabular}{lc}
+\toprule
+\textbf{Component} &\textbf{Team Members}\\\midrule
+Scanner	&Adam\\
+Parser	&Adam, Ian\\
+Validation &Bill\\
+Code Generator &Andrew, Bill, Ian\\
+Set Class &Bill, Andrew\\
+Regression Suite &Ian, Bill, Andrew\\\bottomrule
+\end{tabular}
+\end{center}
+
+\tikzstyle{n1} = [minimum height = 3em, minimum width = 10em, text centered, fill=blue!40, drop shadow, draw = blue, rounded corners]
+\tikzstyle{n2} = [minimum height = 3em, minimum width = 10em, text centered, fill=orange!40, drop shadow, draw = orange, rounded corners]
+\tikzstyle{n3} = [minimum height = 3em, minimum width = 10em, text centered, fill=black!40, drop shadow, draw = black, rounded corners]
+\tikzstyle{n4} = [minimum height = 3em, minimum width = 10em, text centered, fill=green!40, drop shadow, draw = green, rounded corners]
+\tikzstyle{toarrow} = [->, >= open triangle 90, thick]
+
+\begin{figure}[h]
+\label{arch}
+\begin{tikzpicture}
+	\node (input) [n3] at (5,2.5) {\Large infile.su};
+    \node (s) [n1] at (5,0) {\Large Scanner};
+    \node (p) [n1] at (5,-2.5) {\Large Parser};
+    \node (v) [n2] at (0,-2.5) {\Large Validator};
+	\node (cw) [n1] at (5,-5) {\Large Code Generator};
+	\node (cpp) [n2] at (0,-5) {\Large Set Class };
+    \node (out) [n4] at (5,-7.5) { \Large outfile.cpp };
+	\node (test) [n2] at (10,-5) { \Large Regression Suite };
+	
+	\draw [toarrow] (input) -- (s);    
+    \draw [toarrow] (s) -- (p);
+    \draw [toarrow] (p) -- (v);
+    \draw [toarrow] (p) -- (cw);
+    \draw [toarrow] (v) -- (cw);
+    \draw [toarrow] (cpp) -- (cw);
+    \draw [toarrow] (cw) -- (out);
+    \draw [toarrow] (test) -- (out);
+    \draw [toarrow] (test) -- (cw);
+\end{tikzpicture}
+\caption{Overview of Setup Compiler}
+\end{figure}

@@ -1,0 +1,11 @@
+function test[int a] returns int {
+	if(a < 2) then { print("this"); } else { print("that"); }
+	return 0;
+	}
+
+function main[] returns int {
+  	test(0);
+	test(4);
+	
+	return 0;
+	}

@@ -1,0 +1,41 @@
+function first[] returns int
+{
+  int a = 2;
+ return 0;
+}
+function second[] returns int
+{
+ first();
+ return 0;
+}
+function third[] returns int
+{
+ second();
+ return 0;
+}
+function fourth[] returns int
+{
+ third();
+ return 0;
+}
+function fifth[] returns int
+{
+ fourth();
+ return 0;
+}
+function sixth[] returns int
+{
+ fifth();
+ return 0;
+}
+function seventh[] returns int
+{
+ sixth();
+ return 0;
+}
+function eighth[] returns int
+{
+ int a = 1;
+ seventh();
+ return 0;
+}

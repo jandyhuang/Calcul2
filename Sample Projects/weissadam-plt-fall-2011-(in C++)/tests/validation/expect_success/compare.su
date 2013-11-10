@@ -1,0 +1,5 @@
+function main[] returns int
+{
+	bool a = 3 < 4;
+ return 0;
+}

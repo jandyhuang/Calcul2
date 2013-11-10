@@ -1,0 +1,4 @@
+function main[] returns string
+{
+  return 1;
+}

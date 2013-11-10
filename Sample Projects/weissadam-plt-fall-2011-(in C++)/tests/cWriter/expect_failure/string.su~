@@ -1,0 +1,10 @@
+function main[] returns int
+	{
+	string a = "plt is ... ";
+	string b = "42!";
+
+	print(a+b);
+
+	return 0;
+	}
+

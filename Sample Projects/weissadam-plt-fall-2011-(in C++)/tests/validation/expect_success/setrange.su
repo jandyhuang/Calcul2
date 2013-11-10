@@ -1,0 +1,5 @@
+function main[] returns int
+{
+ set a = {-10 ... 10};
+ return 0;
+}

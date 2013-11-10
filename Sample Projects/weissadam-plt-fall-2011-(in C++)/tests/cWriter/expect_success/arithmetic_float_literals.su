@@ -1,0 +1,8 @@
+function main[] returns int {
+	print(0.1*420.0);
+	print(41.5+.5);
+	print(43.5-1.5);
+	print(42.7//1.0);
+	print(4.62/.11);
+	return 0;
+	}

@@ -1,0 +1,57 @@
+function f1 [] returns set
+        {
+           return {14, 42};
+        }
+function main[] returns int
+	{
+
+        set A = {1, 2, 14};
+
+	print("A:");
+	print(A);
+	print("");
+
+	print("f1() returns {14,42}");
+	print("");
+
+	
+	A = f1() union A;
+
+	print("A union f1():");
+
+	print(A);
+
+	print("");
+
+	set C = {1,2,14,42};
+	print("C:");
+	print(C);
+	print("");
+
+
+	print("{1,42} intersect C");
+	print({1,42} intersect C);
+	print("");
+
+	print("C minus f1():");
+
+	print(C minus f1());
+	print("");
+	
+
+	print("C cross {1,2}");
+	print(C cross {1,2});	
+	print("");
+
+	print("# C:");
+	print(# C);
+	print("");
+
+	print("# {1,2}");
+	print(# {1,2});
+	
+	print("");
+
+	return 0;
+	}
+

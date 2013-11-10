@@ -1,0 +1,2 @@
+File "test.ml", line 6, characters 0-63:
+Warning 10: this expression should have type unit.

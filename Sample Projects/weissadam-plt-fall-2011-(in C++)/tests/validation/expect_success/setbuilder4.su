@@ -1,0 +1,17 @@
+function B [int b] returns int
+{ 
+
+ set A = { -1 ... 1 };
+ set B = { (A, b) | b in A };
+ set C = { ( { -1, 1 }, -1 ), ( { -1, 1 }, 1 ) };
+
+ if ( B == C ) then
+ {
+   return 0;
+ }
+ else
+ {
+   return 1;
+ } 
+
+}

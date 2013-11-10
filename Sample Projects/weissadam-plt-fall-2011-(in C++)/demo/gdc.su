@@ -1,0 +1,13 @@
+function gcd [int a, int b] returns int {
+	if(b == 0) then {
+		return a;
+	}else{
+		return gcd(b, a - a // b * b);
+	}
+}
+
+function main [] returns int {
+	int result = gcd(24,18);
+	print(result);
+	return 0;
+}

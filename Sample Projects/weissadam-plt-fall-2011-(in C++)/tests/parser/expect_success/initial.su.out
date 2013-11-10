@@ -1,0 +1,8 @@
+
+function B[int b] returns int
+{
+int a = 0;
+return 0;
+}
+
+

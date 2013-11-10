@@ -1,0 +1,5 @@
+function main[] returns int
+{
+ set a = {(1, {2}, "c"), (4, {5}, "f")};
+ return 0;
+}

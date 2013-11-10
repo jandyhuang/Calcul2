@@ -1,0 +1,8 @@
+function main[] returns int {
+	print(40+2);
+	print(7*6);
+	print(45-3);
+	print(84/2);
+	print(84//2);
+	return 0;
+	}

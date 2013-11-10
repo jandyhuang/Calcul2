@@ -1,0 +1,5 @@
+function main[] returns int
+{
+bool	a = yup || 1;
+ return 0;
+}

@@ -1,0 +1,5 @@
+function main[int a] returns int 
+{
+	int x = 10 + a * 3 - 4;
+	return x;
+}

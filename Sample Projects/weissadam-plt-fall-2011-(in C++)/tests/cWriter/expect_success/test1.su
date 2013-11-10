@@ -1,0 +1,6 @@
+function main[] returns int 
+	{
+	int x = 3;
+	int y = 0 + x + 7;
+	return y;
+	}

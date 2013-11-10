@@ -1,0 +1,28 @@
+\chapter{Setup Tutorial}
+Each program you write in \lang should be placed in a plain text file.  By convention, the \verb|.su| suffix is used to denote programs written in valid \lang code.  Let's write a simple program to get the hang for how \lang works.
+
+\section{A Simple Scheduling Program}
+\subsection{Writing the Code}
+Create a text file entitled \verb|schedule.su| and open it in your text editor.  In this file, place the following text:
+
+\begin{code}
+/* Our First Program */
+function main[] returns int {
+   set days = {"M","T","W","Th","F"};
+   set hrs = {1...24};
+   set week = Days cross hrs;
+   return 0;   
+   }
+\end{code}
+
+We use the keyword \verb|set| to indicate that we are defining a variable name for a set
+\subsection{Compiling a Program}
+
+\begin{code}
+
+-$ ./cWriter.native < hello.su
+
+\end{code}
+
+\section{Sets and Tuples}
+\section{Using Set-Builder Notation}

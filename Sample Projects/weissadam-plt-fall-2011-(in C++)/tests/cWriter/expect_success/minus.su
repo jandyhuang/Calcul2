@@ -1,0 +1,6 @@
+function main [] returns int {
+	set A = {1,2,3,42};
+	set B = {1,2,3};
+	print(A minus B);
+	return 0;
+	}

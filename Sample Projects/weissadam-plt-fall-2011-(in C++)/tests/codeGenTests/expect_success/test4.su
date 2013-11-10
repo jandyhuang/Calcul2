@@ -1,0 +1,10 @@
+function main[int a] returns int 
+{
+	int retval = 0;
+	while(a > 0) {
+		retval = retval + a;	
+		a = a - 1;
+	}
+
+	return retval;
+}

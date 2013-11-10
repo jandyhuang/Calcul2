@@ -1,0 +1,151 @@
+\documentclass{beamer}
+\usepackage{beamerthemeshadow}
+\usepackage{tikz}
+\usetikzlibrary{shadows,positioning,arrows,fit,petri,decorations.pathmorphing,backgrounds}
+
+\title{\textsc{The Setup Programming Language}}
+\author{I. Erb - A. Ingraham - B. Miller - A. Weis}
+
+\begin{document}
+\frame{\titlepage}
+
+\section*{An Overview of Setup}
+\begin{frame}
+	\frametitle{Overview and Motivation}
+	\framesubtitle{Setup is a language for manipulating sets and tuples}
+	\begin{block}{Overview}
+	\begin{itemize}
+	\item Uses \emph{C-style} syntax
+	\item Additional \textit{tuple} and \textit{set} objects
+	\item Elementary operations on sets are supported (e.g., union, intersection, set-difference)
+	\end{itemize}
+	\end{block}
+
+	\begin{block}{Motivation}
+	\begin{itemize}
+	\item The language of set theory is widely-used in mathematics and science
+	\item Programs can be written quickly without verbose code
+	\item Natural and intuitive way to think about large data sets
+	\end{itemize}
+	\end{block}	
+\end{frame}
+
+\begin{frame}
+	\frametitle{Objectives}
+	\framesubtitle{In creating Setup, we had three objectives in mind}
+	\begin{block}{Objectives}	
+	\begin{enumerate}
+		\item Create, modify and manipulate sets and tuples in a natural and intuitive way
+		\item Minimal code generation
+		\item Allow for both ordered and unordered collections of data
+	\end{enumerate}
+	\end{block}
+\end{frame}
+
+\section*{How to Use Setup}
+\begin{frame}
+\frametitle{The Basics}
+
+\begin{block}{Basic Elements of our Language}
+\begin{center}
+\begin{tabular}{ccc}
+\textbf{Primatives} &\textbf{Objects} &\textbf{Set Operators}\\\hline
+\texttt{int} &\texttt{set} &\texttt{union}\\
+\texttt{string} &\texttt{tuple} &\texttt{intersect}\\
+\texttt{double} & &\texttt{cross}\\
+\texttt{bool} & &\texttt{minus}\\
+ & &\texttt{\#}
+\end{tabular}
+\end{center}
+\end{block}
+
+\begin{itemize}
+\item The usual arithmetic operations \texttt{+,-,*,/} are provided
+\item The \texttt{+} operator is overloaded for string concatenation
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Sets and Tuples}
+\begin{block}{Tuples}
+\texttt{((1,"a"),2) //type: ((int,str),int)}\\
+\texttt{((1,2),3) //type: ((int,int),int)}
+\end{block}
+
+\begin{block}{Set Initialization}
+\texttt{set A = {4, 5, 6};}\\
+\texttt{set B = {1 ... 6};}\\
+\texttt{set C = { (x,y) | x in A, y in B };}
+\end{block}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Example Functions}
+\begin{block}{Functions}
+\texttt{function main[] returns int \{/* ... */\}}\\
+\texttt{function symDiff[set A, set B] returns set \{}\\
+\texttt{\qquad\qquad return (A union B) minus (A intersect B);}
+\texttt{\}}
+
+\end{block}
+\begin{itemize}
+\item Execution begins with \texttt{main}
+\item Functions must be defined before they are called
+\item Function definition nesting is not permitted
+\end{itemize}
+\end{frame}
+
+\section*{Implementation}
+\tikzstyle{n1} = [text centered, fill=blue!40, drop shadow, draw = blue, rounded corners]
+\tikzstyle{n2} = [text centered, fill=orange!40, drop shadow, draw = orange, rounded corners]
+\tikzstyle{n3} = [text centered, fill=black!40, drop shadow, draw = black, rounded corners]
+\tikzstyle{n4} = [text centered, fill=green!40, drop shadow, draw = green, rounded corners]
+\tikzstyle{toarrow} = [->, >= open triangle 90, thick]
+\begin{frame}
+\begin{figure}[h]
+\label{arch}
+\begin{tikzpicture}
+	\node (input) [n3] at (0,-5) {infile.su};
+    \node (s) [n1] at (2,-5) {Scanner};
+    \node (p) [n1] at (2,-3) {Parser};
+    \node (v) [n2] at (5,-3) {Validator};
+	\node (cw) [n1] at (5,-5) {cWriter};
+	\node (cpp) [n2] at (2,-6) { SetupBase };
+    \node (out) [n4] at (5,-6) {outfile.cpp };
+	
+	\draw [toarrow] (input) -- (s);    
+    \draw [toarrow] (s) -- (p);
+    \draw [toarrow] (p) -- (v);
+    \draw [toarrow] (p) -- (cw);
+    \draw [toarrow] (v) -- (cw);
+    \draw [toarrow] (cpp) -- (out);
+    \draw [toarrow] (cw) -- (out);
+\end{tikzpicture}
+\caption{Overview of Setup Compiler}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\frametitle{Implementation}
+\begin{block}{Implementation}
+\begin{itemize}
+\item Compiler can verify most type assignments by looking in a single frame of function context 
+\item Setup supports a compact syntax we call the Set Builder expressions
+\item Set Builder has a lambda style syntax 
+\item Variables are defined by the result of an expression evaluation
+\end{itemize}
+\end{block}
+\end{frame}
+
+\section*{Lessons}
+\begin{frame}
+\frametitle{Lessons Learned}
+\begin{block}{Lessons Learned}
+\begin{itemize}
+	\item Do not underestimate the task of building a compiler
+	\item Just because the road is at first downhill, does not mean it does not lead to a cliff
+\end{itemize}
+\end{block}
+\end{frame}
+\end{document}

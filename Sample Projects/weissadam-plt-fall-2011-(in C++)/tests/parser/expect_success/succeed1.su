@@ -1,0 +1,30 @@
+function main [] returns int 
+{ 
+	a = {(x,y) | a in A, x in a, y in a-{x}};
+return 0;
+}
+
+function more [int b] returns int 
+{ 
+	B = {x*2 | a in A, x in {y+1 | y in a}};
+return 0;
+}
+
+
+function main2 [int b, string a] returns int 
+{ 
+	a+a;
+	return z;
+	while(a==1) {
+		b=b+1;
+	}
+	if (a==1) then
+	{
+		do_stuff();
+	}
+	else
+	{
+		do_other_stuff();
+	}
+return 0;
+}

@@ -1,0 +1,5 @@
+function main[] returns int
+{
+ bool a = 1 < "a";
+return 0;
+}

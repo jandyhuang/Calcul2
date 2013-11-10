@@ -1,0 +1,5 @@
+int a;
+function main[] returns int
+{
+  a=2;
+}

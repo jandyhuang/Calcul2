@@ -1,0 +1,6 @@
+function B [int b] returns int
+{ 
+ set a = {0.0};
+ int B = {b*2.0 | b in {y+1.0 | y in a}};
+ return 0;
+}

@@ -1,0 +1,19 @@
+function main [ int l, int r ] returns int
+{
+  int a;
+  if ( l > r ) then
+  {
+    return 1;
+  }
+  else
+  {
+    if ( l == r ) then
+    {
+      return 0;
+    }
+    else
+    {
+      return -1;
+    }
+  }
+}

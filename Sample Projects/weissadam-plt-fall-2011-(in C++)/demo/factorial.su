@@ -1,0 +1,17 @@
+function factorial [int n] returns int {
+
+	if(n < 2) then {
+		return 1;
+	}else{
+		return n * factorial(n-1);
+	}	
+
+}
+
+function main[] returns int
+	{
+	print(factorial(4));
+
+	return 0;
+	}
+

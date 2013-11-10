@@ -1,0 +1,9 @@
+function main[] returns int{
+	/* print("nothing"); */
+	/*  
+	print ("nothing");
+	*/  
+	print("something");
+	print("this are comment delimiters: /* comment */");
+	return 0;
+	}

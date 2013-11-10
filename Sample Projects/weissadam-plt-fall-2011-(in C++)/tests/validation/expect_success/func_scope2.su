@@ -1,0 +1,11 @@
+function first[] returns int
+{
+  string a = "b";
+ return 0;
+}
+function second[] returns int
+{
+ string a = "a";
+ first();
+ return 0;
+}

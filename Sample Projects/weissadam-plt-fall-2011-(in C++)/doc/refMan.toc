@@ -1,0 +1,43 @@
+\contentsline {chapter}{\numberline {1}Introduction}{3}
+\contentsline {chapter}{\numberline {2}Setup Tutorial}{4}
+\contentsline {section}{\numberline {2.1}A Simple Scheduling Program}{4}
+\contentsline {subsection}{\numberline {2.1.1}Writing the Code}{4}
+\contentsline {subsection}{\numberline {2.1.2}Compiling a Program}{5}
+\contentsline {section}{\numberline {2.2}Sets and Tuples}{5}
+\contentsline {section}{\numberline {2.3}Using Set-Builder Notation}{5}
+\contentsline {chapter}{\numberline {3}Language Reference Manual}{6}
+\contentsline {section}{\numberline {3.1}Overview}{6}
+\contentsline {subsection}{\numberline {3.1.1}Introduction}{6}
+\contentsline {subsection}{\numberline {3.1.2}A Motivating Example}{6}
+\contentsline {subsection}{\numberline {3.1.3}Lexical Conventions}{7}
+\contentsline {subsubsection}{Comments}{8}
+\contentsline {subsubsection}{Identifiers}{8}
+\contentsline {subsubsection}{Keywords}{8}
+\contentsline {subsubsection}{Primitive Types}{8}
+\contentsline {subsubsection}{Integers}{8}
+\contentsline {subsubsection}{Strings}{9}
+\contentsline {subsubsection}{Floats}{9}
+\contentsline {subsubsection}{Booleans}{9}
+\contentsline {section}{\numberline {3.2}Syntax Notation}{9}
+\contentsline {section}{\numberline {3.3}Objects}{10}
+\contentsline {subsection}{\numberline {3.3.1}Variables}{10}
+\contentsline {subsubsection}{Variable Initialization}{10}
+\contentsline {subsection}{\numberline {3.3.2}Tuples}{10}
+\contentsline {subsection}{\numberline {3.3.3}Sets}{11}
+\contentsline {subsubsection}{Literal Initialization}{11}
+\contentsline {subsubsection}{Range Initialization}{11}
+\contentsline {subsubsection}{Set-Builder Initialization}{12}
+\contentsline {section}{\numberline {3.4}Operators}{13}
+\contentsline {subsection}{\numberline {3.4.1}Arithmetic Operations}{13}
+\contentsline {subsection}{\numberline {3.4.2}Set Operations}{13}
+\contentsline {section}{\numberline {3.5}Language Syntax}{14}
+\contentsline {subsection}{\numberline {3.5.1}Structure of a Setup Program}{14}
+\contentsline {subsection}{\numberline {3.5.2}Expressions}{15}
+\contentsline {subsection}{\numberline {3.5.3}Functions}{15}
+\contentsline {subsection}{\numberline {3.5.4}Statements}{16}
+\contentsline {section}{\numberline {3.6}Scope Rules}{17}
+\contentsline {chapter}{\numberline {4}Project Plan}{19}
+\contentsline {chapter}{\numberline {5}Compiler Architecture}{21}
+\contentsline {chapter}{\numberline {6}Test Plan}{23}
+\contentsline {chapter}{\numberline {7}Lessons Learned}{24}
+\contentsline {chapter}{\numberline {8}Appendix}{25}

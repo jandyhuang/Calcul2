@@ -1,0 +1,8 @@
+function main [ int l, int r ] returns int
+{
+   while ( 1 )
+  {
+    l = l - 1;
+  }
+  return 0;
+}

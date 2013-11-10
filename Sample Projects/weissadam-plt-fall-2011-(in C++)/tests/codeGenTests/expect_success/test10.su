@@ -1,0 +1,5 @@
+function main[int a] returns int 
+{
+	set A = {a, 2*a, 4};
+	return 2*a;
+}

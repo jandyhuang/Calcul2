@@ -1,0 +1,102 @@
+\documentclass[12pt]{report}
+
+%---------------------------------------------------------------
+% Package Inclusions
+\usepackage[svgnames]{xcolor}
+\usepackage{booktabs}
+\usepackage{fancyhdr}
+\usepackage{paralist}
+\usepackage{graphicx}		
+\usepackage{amsmath}		
+\usepackage{amssymb}	
+\usepackage{amsthm}
+\usepackage{tikz}
+\usetikzlibrary{shadows,positioning,arrows,fit,petri,decorations.pathmorphing,backgrounds}
+
+%---------------------------------------------------------------
+% Page Layout
+\pagestyle{fancy}
+\setlength{\parindent}{0 pt}
+\oddsidemargin = .5 in
+\textheight = 560pt
+\textwidth = 5.5 in
+\headwidth = \textwidth
+
+%---------------------------------------------------------------
+% Verbatim Text
+\usepackage{fancyvrb,fancybox,calc} 
+\usepackage[svgnames]{xcolor} 
+\newenvironment{code}{\VerbatimEnvironment%
+  \begin{Sbox} 
+  \begin{minipage}{\linewidth-2\fboxsep-2\fboxrule-4pt}    
+  \begin{Verbatim}
+}{% 
+  \end{Verbatim}
+  \end{minipage}   
+  \end{Sbox}
+  \fcolorbox{black}{LightGray}{\TheSbox} 
+} 
+
+%------------------------------------------------------------------
+% Header Format
+\lhead{}
+\renewcommand{\headrulewidth}{.4pt}
+\renewcommand{\footrulewidth}{.4pt}
+
+%------------------------------------------------------------------
+% OTHER FORMATTING
+\setcounter{tocdepth}{1}
+\setlength{\parskip}{5pt}
+\newenvironment{grammar}{\begin{center}\itshape \begin{tabular}{l}}{\end{tabular}\end{center}}
+\newenvironment{myList}
+{\begin{itemize}
+  \setlength{\itemsep}{3pt}
+  \setlength{\parskip}{0pt}
+  \setlength{\parsep}{0pt}}
+{\end{itemize}}
+
+\newenvironment{myNumList}
+{\begin{enumerate}
+  \setlength{\itemsep}{3pt}
+  \setlength{\parskip}{0pt}
+  \setlength{\parsep}{0pt}}
+{\end{enumerate}}
+
+%------------------------------------------------------------------
+% CUSTOM COMMANDS
+\newcommand{\set}[1]{\lbrace #1 \rbrace}
+\newcommand{\OR}{$\phantom{x}\vert\phantom{x}$}
+
+%------------------------------------------------------------------
+% Global Vars
+\def \lang {{\scshape Setup} }
+
+\title{\scshape \Huge The Setup Programming Language
+\author{Ian Erb (ire2102)\\
+Bill Warner (whw2108)\\
+Adam Weis (ajw2137)\\
+Andrew Ingraham (aci2110)
+}
+\date{\today}
+}
+
+%---------------------------------------------------------------------------
+% DOCUMENT BEGINS
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+%----------------------------------------------------------------------------
+% Language Reference Manual
+\input{introduction}
+\input{tutorial}
+\input{refmanual}
+\input{projectplan}
+\input{architecture}
+\input{testplan}
+\input{lessons}
+\input{appendix}
+
+
+\end{document}

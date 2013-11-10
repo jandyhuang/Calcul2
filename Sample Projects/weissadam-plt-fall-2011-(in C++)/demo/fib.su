@@ -1,0 +1,9 @@
+function sum[int n, int m] returns int {
+	return n+m;
+}
+
+function main [] returns int {
+	int result = sum(5, 9);
+	print(result);
+	return 0;
+}

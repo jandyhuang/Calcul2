@@ -1,0 +1,16 @@
+function B [int b] returns int
+{ 
+
+ set A = { 0 ... 9 };
+ set B = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+ if ( A == B ) then
+ {
+   return 0;
+ }
+ else
+ {
+   return 1;
+ } 
+
+}

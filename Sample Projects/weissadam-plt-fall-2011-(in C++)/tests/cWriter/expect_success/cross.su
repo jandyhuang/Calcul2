@@ -1,0 +1,13 @@
+function f1 [] returns set
+        {
+           return {42};
+        }
+function main[] returns int
+	{
+        set A = {1};
+	A = f1() cross A;
+	print(A);
+
+	return 0;
+	}
+

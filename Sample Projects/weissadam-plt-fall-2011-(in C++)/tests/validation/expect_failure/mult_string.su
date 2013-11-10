@@ -1,0 +1,5 @@
+function main[] returns int
+{
+string	a = "1" * 1;
+ return 0;
+}

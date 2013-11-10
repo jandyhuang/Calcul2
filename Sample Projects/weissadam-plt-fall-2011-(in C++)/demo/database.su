@@ -1,0 +1,20 @@
+function database [] returns int {
+
+	string name = "Andrew";
+	int ssn = 1234;
+	string name2 = "Ian";
+	int ssn2 = 4312;
+
+	set S2 = {(name, ssn), (name2, ssn2)};
+	print(S2);
+
+	return 0; 
+
+}
+
+function main [] returns int {
+
+	database();
+
+	return 0;
+}

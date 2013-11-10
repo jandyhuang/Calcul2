@@ -1,0 +1,29 @@
+function iAdd[int a, int b] returns int
+	{
+	return a + b;
+	}
+
+function dAdd[float a, float b] returns float
+	{
+	return a + b;
+	}
+function main[] returns int
+	{
+
+	int a = 5;
+	int b = 2;
+	float c = 2.5;
+	float d = 5.0;
+
+	print("5 + 2 = ");
+	print(iAdd(a,b));
+
+	print("2.5 + 5.0 = ");
+	print(dAdd(c,d));
+
+	print("2.5 + 5");
+	print(c+a);
+
+	return 0;
+	}
+

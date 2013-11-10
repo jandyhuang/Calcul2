@@ -1,0 +1,25 @@
+function getAddVal[int a] returns int {
+	return 42-a;
+	}
+function getSubVal[int a] returns int {
+	return 42+a;
+	}
+function getMultVal[] returns int {
+	return  6;
+	}
+function getDivVal[] returns int {
+	return 2;
+	}
+
+
+
+
+
+function main[] returns int {
+	print(7 + getAddVal(7));
+	print(getSubVal(7)-7);
+	print(7*getMultVal());
+	print(84/getDivVal());
+	print(85/getDivVal());
+	return 0;
+	}

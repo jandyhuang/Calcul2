@@ -1,0 +1,5 @@
+function main[] returns int
+{
+int	a = 1 - "1";
+ return 0;
+}

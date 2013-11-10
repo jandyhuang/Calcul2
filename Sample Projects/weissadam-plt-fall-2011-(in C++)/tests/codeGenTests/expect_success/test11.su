@@ -1,0 +1,11 @@
+function main[int a] returns int 
+{
+	set A = {a, 2*a, 4};
+	set B = {"abc", "def", "ghi"};
+	set C = {1.0, 3.4, 9.3};
+	set D = {5 ... 9};
+	set E = {12 ... 2 };
+	A = {1, 5, 10};
+	E = D;
+	return 2*a;
+}
