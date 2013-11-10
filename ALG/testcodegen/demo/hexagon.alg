@@ -1,0 +1,47 @@
+def int main()
+{
+	point p1;
+	point p2;
+	point p3;
+	point p4;
+	point p5;
+	point p6;
+	polygon poly1;
+	polygon poly2;
+	polygon poly3;
+	polygon poly4;
+	p1=[10;0];
+	p2=[0;10];
+	p3=[10;20];
+	p4=[20;20];
+	p5=[30;10];
+	p6=[20;0];
+	poly1=[p1,p2,p3];
+	poly2=[p1,p2,p3,p4];
+	poly3=[p1,p2,p3,p4,p5];
+	poly4=[p1,p2,p3,p4,p5,p6];
+	Draw(poly1);
+	Draw(poly2);
+	Draw(poly3);
+	Draw(poly4);
+	print("Areas ");
+	print_newline();
+	print(Area(poly1));
+	print_newline();
+	print(Area(poly2));
+	print_newline();
+	print(Area(poly3));
+	print_newline();
+	print(Area(poly4));
+	print_newline();
+	print("Perimeters ");
+	print_newline();
+	print(Perimeter(poly1));
+	print_newline();
+	print(Perimeter(poly2));
+	print_newline();
+	print(Perimeter(poly3));
+	print_newline();
+	print(Perimeter(poly4));
+	print_newline();
+}

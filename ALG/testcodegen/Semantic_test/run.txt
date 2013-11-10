@@ -1,0 +1,2 @@
+Please go to folder ocaml and run 
+bash ./compiler.sh testcodegen/Semantic_test/test_wrong_usage_of_function.alg output

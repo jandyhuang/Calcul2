@@ -1,0 +1,14 @@
+#include "main.h"
+#include "stdio.h"
+#include"string.h"
+int a;
+int b;
+int foo (int a,int b)
+{int a;
+polygon * b;
+return a;
+}
+int main ()
+{
+return 0;
+}

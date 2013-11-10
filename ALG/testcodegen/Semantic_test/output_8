@@ -1,0 +1,14 @@
+#include "main.h"
+#include "stdio.h"
+#include"string.h"
+int a;
+ellipse * foo (ellipse * e3)
+{
+return Move(*e3,2,1);
+}
+int main ()
+{ellipse * e1;
+ellipse * e2;
+e2=foo((e1));
+return 0;
+}
