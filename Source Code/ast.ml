@@ -1,9 +1,16 @@
-type op = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq
+type op = Add | Sub | Mult | Div | Pow | IntDiv | Mod | Equal | Deriv | Integ | Eq | Neq | Less | Leq |
+Greater | Geq | And | Or
+
+type befop = Sqrt | Sin | Cos | Tan | ASin | ACos | ATan | Log | Ln
+
+type aftop = Not | Deriv
 
 type expr =
     Literal of int
   | Id of string
   | Binop of expr * op * expr
+  | BeforeUnaryop of befop * expr
+  | AfterUnaryop of expr * aftop
   | Assign of string * expr
   | Call of string * expr list
   | Noexpr
