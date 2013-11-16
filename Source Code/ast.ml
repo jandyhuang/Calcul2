@@ -1,16 +1,20 @@
 type op = Add | Sub | Mult | Div | Pow | IntDiv | Mod | Equal | Deriv | Integ | Eq | Neq | Less | Leq |
 Greater | Geq | And | Or
 
-type befop = Sqrt | Sin | Cos | Tan | ASin | ACos | ATan | Log | Ln
+type preop = Sqrt | Sin | Cos | Tan | ASin | ACos | ATan | Log | Ln | Not
 
-type aftop = Not | Deriv
+type aftop = Deriv
+
+type vector =
+    Vector of float list
 
 type expr =
-    Literal of int
+    Num of int
+  | Real of float
   | Id of string
   | Binop of expr * op * expr
-  | BeforeUnaryop of befop * expr
-  | AfterUnaryop of expr * aftop
+  | PreUnaop of preop * expr
+  | AftUnaop of expr * aftop
   | Assign of string * expr
   | Call of string * expr list
   | Noexpr
@@ -23,51 +27,22 @@ type stmt =
   | For of expr * expr * expr * stmt
   | While of expr * stmt
 
+type var_decl = {
+    name : string;
+    value : float;
+}
+
+type math_func_decl = {
+    fname : string;
+    uknowns : expr list;
+    formula : expr list;
+}
+
 type func_decl = {
     fname : string;
     formals : string list;
     locals : string list;
     body : stmt list;
-  }
+}
 
 type program = string list * func_decl list
-
-let rec string_of_expr = function
-    Literal(l) -> string_of_int l
-  | Id(s) -> s
-  | Binop(e1, o, e2) ->
-      string_of_expr e1 ^ " " ^
-      (match o with
-	Add -> "+" | Sub -> "-" | Mult -> "*" | Div -> "/"
-      | Equal -> "==" | Neq -> "!="
-      | Less -> "<" | Leq -> "<=" | Greater -> ">" | Geq -> ">=") ^ " " ^
-      string_of_expr e2
-  | Assign(v, e) -> v ^ " = " ^ string_of_expr e
-  | Call(f, el) ->
-      f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
-  | Noexpr -> ""
-
-let rec string_of_stmt = function
-    Block(stmts) ->
-      "{\n" ^ String.concat "" (List.map string_of_stmt stmts) ^ "}\n"
-  | Expr(expr) -> string_of_expr expr ^ ";\n";
-  | Return(expr) -> "return " ^ string_of_expr expr ^ ";\n";
-  | If(e, s, Block([])) -> "if (" ^ string_of_expr e ^ ")\n" ^ string_of_stmt s
-  | If(e, s1, s2) ->  "if (" ^ string_of_expr e ^ ")\n" ^
-      string_of_stmt s1 ^ "else\n" ^ string_of_stmt s2
-  | For(e1, e2, e3, s) ->
-      "for (" ^ string_of_expr e1  ^ " ; " ^ string_of_expr e2 ^ " ; " ^
-      string_of_expr e3  ^ ") " ^ string_of_stmt s
-  | While(e, s) -> "while (" ^ string_of_expr e ^ ") " ^ string_of_stmt s
-
-let string_of_vdecl id = "int " ^ id ^ ";\n"
-
-let string_of_fdecl fdecl =
-  fdecl.fname ^ "(" ^ String.concat ", " fdecl.formals ^ ")\n{\n" ^
-  String.concat "" (List.map string_of_vdecl fdecl.locals) ^
-  String.concat "" (List.map string_of_stmt fdecl.body) ^
-  "}\n"
-
-let string_of_program (vars, funcs) =
-  String.concat "" (List.map string_of_vdecl vars) ^ "\n" ^
-  String.concat "\n" (List.map string_of_fdecl funcs)
