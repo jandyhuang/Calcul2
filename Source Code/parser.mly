@@ -20,7 +20,7 @@
 %left TIMES DIVIDE INTDIVIDE
 %right DERIV INTEG SQRT SIN COS TAN ASIN ACOS ATAN LOG LN
 
-**************¸Äµ½´Ë
+**************changed to here
 
 
 
