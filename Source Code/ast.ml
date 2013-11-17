@@ -3,8 +3,6 @@ Greater | Geq | And | Or
 
 type preop = Sqrt | Sin | Cos | Tan | ASin | ACos | ATan | Log | Ln | Not
 
-type aftop = Deriv
-
 type vector =
     Vector of float list
 
@@ -14,7 +12,6 @@ type expr =
   | Id of string
   | Binop of expr * op * expr
   | PreUnaop of preop * expr
-  | AftUnaop of expr * aftop
   | Assign of string * expr
   | Call of string * expr list
   | Noexpr
