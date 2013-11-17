@@ -50,8 +50,6 @@ rule token = parse
 | "else"   { ELSE }
 | "for"    { FOR }
 | "while"  { WHILE }
-| "to"     { TO }
-| "downto" { DOWNTO }
 | digit+ as lxm { LITERAL(int_of_string lxm) }
 | (digit+'.'digit*)('e'['+''-']?digit+)?
 | digit+'e'['+''-']?digit+ as lxm { REAL(float_of_string lxm) }
