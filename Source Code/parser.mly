@@ -34,17 +34,7 @@ expr:
   | expr INTDIVIDE expr { Binop($1, IntDiv,  $3) }
   | expr MOD    expr { Binop($1, Mod,   $3) }
   | expr DIVIDE expr { Binop($1, Div,   $3) }
-  | expr DIVIDE expr { Binop($1, Div,   $3) }
-  | SQRT expr        {PreUnaop(Sqrt,$2)}
-  | SIN expr        {PreUnaop(Sin,$2)}
-  | COS expr         {PreUnaop(Cos,$2)}
-  | TAN expr         {PreUnaop(Tan,$2)} 
-  | ASIN expr        {PreUnaop(Asin,$2)} 
-  | ACOS expr        {PreUnaop(Acos,$2)} 
-  | ATAN expr        {PreUnaop(Atan,$2)}
-  | LOG expr         {PreUnaop(Log,$2)} 
-  | LN expr          {PreUnaop(Ln,$2)} 
-  | expr EQ     expr { Binop($1, Equal, $3) }
+  | expr EQ     expr { Binop($1, Eq, $3) }
   | expr NEQ    expr { Binop($1, Neq,   $3) }
   | expr LT     expr { Binop($1, Less,  $3) }
   | expr LEQ    expr { Binop($1, Leq,   $3) }
@@ -52,6 +42,20 @@ expr:
   | expr GEQ    expr { Binop($1, Geq,   $3) }
   | expr AND    expr { Binop($1, And,   $3) }
   | expr OR     expr { Binop($1, Or,    $3) }
+
+  | expr DERIV  expr { Binop($1, Deriv,   $3) }
+  | expr INTEG  expr { Binop($1, Integ,   $3) }
+
+  | SQRT expr        {PreUnaop(Sqrt,$2)}
+  | SIN expr        {PreUnaop(Sin,$2)}
+  | COS expr         {PreUnaop(Cos,$2)}
+  | TAN expr         {PreUnaop(Tan,$2)} 
+  | ASIN expr        {PreUnaop(ASin,$2)} 
+  | ACOS expr        {PreUnaop(ACos,$2)} 
+  | ATAN expr        {PreUnaop(ATan,$2)}
+  | LOG expr         {PreUnaop(Log,$2)} 
+  | LN expr          {PreUnaop(Ln,$2)} 
+
   | NOT expr          {PreUnaop(Not,$2)} 
 
 /****************************/
