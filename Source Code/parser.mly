@@ -94,6 +94,10 @@ fdecl:
 	 formals = $3;
 	 locals = List.rev $6;
 	 body = List.rev $7 } }
+  | ID LPAREN formals_opt RPAREN ASSIGN expr
+     { { fname = $1; 
+	 unknowns = $3;
+	 formula = $6 } }
 
 formals_opt:
     /* nothing */ { [] }
