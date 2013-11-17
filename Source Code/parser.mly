@@ -47,7 +47,7 @@ expr:
   | expr INTEG  expr { Binop($1, Integ,   $3) }
 
   | SQRT expr        {PreUnaop(Sqrt,$2)}
-  | SIN expr        {PreUnaop(Sin,$2)}
+  | SIN expr         {PreUnaop(Sin,$2)}
   | COS expr         {PreUnaop(Cos,$2)}
   | TAN expr         {PreUnaop(Tan,$2)} 
   | ASIN expr        {PreUnaop(ASin,$2)} 
@@ -55,8 +55,14 @@ expr:
   | ATAN expr        {PreUnaop(ATan,$2)}
   | LOG expr         {PreUnaop(Log,$2)} 
   | LN expr          {PreUnaop(Ln,$2)} 
+  | NOT expr         {PreUnaop(Not,$2)}
 
-  | NOT expr          {PreUnaop(Not,$2)} 
+  | LITERAL          { Num($1) }
+  | REAL             {Real($1)}
+  | ID               {Id($1)}
+
+  | expr              {Assign()} 
+
 
 /****************************/
         
