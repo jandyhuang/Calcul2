@@ -20,14 +20,50 @@
 %left TIMES DIVIDE INTDIVIDE
 %right DERIV INTEG SQRT SIN COS TAN ASIN ACOS ATAN LOG LN
 
-**************changed to here
-
-
-
 %start program
 %type <Ast.program> program
 
 %%
+
+expr:
+    expr PLUS   expr { Binop($1, Add,   $3) }
+  | expr MINUS  expr { Binop($1, Sub,   $3) }
+  | expr TIMES  expr { Binop($1, Mult,  $3) }
+  | expr DIVIDE expr { Binop($1, Div,   $3) }
+  | expr POWER  expr { Binop($1, Pow,   $3) }
+  | expr INTDIVIDE expr { Binop($1, IntDiv,  $3) }
+  | expr MOD    expr { Binop($1, Mod,   $3) }
+  | expr DIVIDE expr { Binop($1, Div,   $3) }
+  | expr DIVIDE expr { Binop($1, Div,   $3) }
+  | SQRT expr        {PreUnaop(Sqrt,$2)}
+  | SIN expr        {PreUnaop(Sin,$2)}
+  | COS expr         {PreUnaop(Cos,$2)}
+  | TAN expr         {PreUnaop(Tan,$2)} 
+  | ASIN expr        {PreUnaop(Asin,$2)} 
+  | ACOS expr        {PreUnaop(Acos,$2)} 
+  | ATAN expr        {PreUnaop(Atan,$2)}
+  | LOG expr         {PreUnaop(Log,$2)} 
+  | LN expr          {PreUnaop(Ln,$2)} 
+  | NOT expr          {PreUnaop(Not,$2)} 
+
+/****************************/
+        
+        LITERAL         { Number($1) }
+  | ID               { Id($1) }
+  | expr PLUS   expr { Binop($1, Add,   $3) }
+  | expr MINUS  expr { Binop($1, Sub,   $3) }
+  | expr TIMES  expr { Binop($1, Mult,  $3) }
+  | expr DIVIDE expr { Binop($1, Div,   $3) }
+  | expr EQ     expr { Binop($1, Equal, $3) }
+  | expr NEQ    expr { Binop($1, Neq,   $3) }
+  | expr LT     expr { Binop($1, Less,  $3) }
+  | expr LEQ    expr { Binop($1, Leq,   $3) }
+  | expr GT     expr { Binop($1, Greater,  $3) }
+  | expr GEQ    expr { Binop($1, Geq,   $3) }
+  | ID ASSIGN expr   { Assign($1, $3) }
+  | ID LPAREN actuals_opt RPAREN { Call($1, $3) }
+  | LPAREN expr RPAREN { $2 }
+
 
 program:
    /* nothing */ { [], [] }
@@ -74,22 +110,6 @@ expr_opt:
     /* nothing */ { Noexpr }
   | expr          { $1 }
 
-expr:
-    LITERAL          { Literal($1) }
-  | ID               { Id($1) }
-  | expr PLUS   expr { Binop($1, Add,   $3) }
-  | expr MINUS  expr { Binop($1, Sub,   $3) }
-  | expr TIMES  expr { Binop($1, Mult,  $3) }
-  | expr DIVIDE expr { Binop($1, Div,   $3) }
-  | expr EQ     expr { Binop($1, Equal, $3) }
-  | expr NEQ    expr { Binop($1, Neq,   $3) }
-  | expr LT     expr { Binop($1, Less,  $3) }
-  | expr LEQ    expr { Binop($1, Leq,   $3) }
-  | expr GT     expr { Binop($1, Greater,  $3) }
-  | expr GEQ    expr { Binop($1, Geq,   $3) }
-  | ID ASSIGN expr   { Assign($1, $3) }
-  | ID LPAREN actuals_opt RPAREN { Call($1, $3) }
-  | LPAREN expr RPAREN { $2 }
 
 actuals_opt:
     /* nothing */ { [] }
