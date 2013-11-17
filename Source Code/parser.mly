@@ -7,6 +7,8 @@
 %token IF ELSE FOR WHILE TO DOWNTO
 
 %token <int> LITERAL
+%token <float> REAL
+
 %token <string> ID
 %token EOF
 
@@ -24,6 +26,13 @@
 %type <Ast.program> program
 
 %%
+
+actuals_opt:
+|{ [] }
+| actuals_list { $1 }
+actuals_list:
+|expr { [$1] }
+|expr COMMA actuals_list { $1 :: $3 }
 
 expr:
     expr PLUS   expr { Binop($1, Add,   $3) }
@@ -57,11 +66,14 @@ expr:
   | LN expr          {PreUnaop(Ln,$2)} 
   | NOT expr         {PreUnaop(Not,$2)}
 
-  | LITERAL          { Num($1) }
+  | LITERAL          {Num($1) }
   | REAL             {Real($1)}
   | ID               {Id($1)}
 
-  | expr              {Assign()} 
+  | ID ASSIGN expr   {Assign($1,$3)} 
+  | ID LPAREN actuals_opt RPAREN {Call($1,$3)}
+  | LPAREN expr RPAREN {$2}
+
 
 
 /****************************/
@@ -133,10 +145,3 @@ expr_opt:
   | expr          { $1 }
 
 
-actuals_opt:
-    /* nothing */ { [] }
-  | actuals_list  { List.rev $1 }
-
-actuals_list:
-    expr                    { [$1] }
-  | actuals_list COMMA expr { $3 :: $1 }
