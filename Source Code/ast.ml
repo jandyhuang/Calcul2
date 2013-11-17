@@ -38,7 +38,7 @@ type var_decl = {
 (* declaration for math functions *)
 type math_func_decl = {
     fname : string;
-    uknowns : expr list;
+    unknowns : string list;
     formula : expr list;
 }
 
