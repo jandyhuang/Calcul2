@@ -40,8 +40,10 @@ rule token = parse
 | ')'      { RPAREN }
 | '{'      { LBRACE }
 | '}'      { RBRACE }
+/*
 | '['      { LVEC }
 | ']'      { RVEC }
+*/
 | ';'      { SEMI }
 | ':'      { OUTPUT }
 | ','      { COMMA }
@@ -51,8 +53,7 @@ rule token = parse
 | "for"    { FOR }
 | "while"  { WHILE }
 | digit+ as lxm { LITERAL(int_of_string lxm) }
-| (digit+'.'digit*)('e'['+''-']?digit+)?
-| digit+'e'['+''-']?digit+ as lxm { REAL(float_of_string lxm) }
+| (digit+'.'digit*)('e'['+''-']?digit+)? | digit+'e'['+''-']?digit+ as lxm { REAL(float_of_string lxm) }
 | ['a'-'z' 'A'-'Z']['a'-'z' 'A'-'Z' '0'-'9' '_']* as lxm { ID(lxm) }
 | eof { EOF }
 | _ as char { raise (Failure("illegal character " ^ Char.escaped char)) }
