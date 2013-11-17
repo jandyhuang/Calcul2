@@ -92,10 +92,6 @@ stmt:
      { For($3, $5, $7, $9) }
   | WHILE LPAREN expr RPAREN stmt { While($3, $5) }
 
-
-
-/****************************/
-
 program:
    /* nothing */ { [], [] }
  | program vdecl { ($2 :: fst $1), snd $1 }
@@ -126,20 +122,3 @@ vdecl_list:
 
 vdecl:
    ID ASSIGN expr SEMI{ { name = $1; value = $3; } }
-
-stmt_list:
-    /* nothing */  { [] }
-  | stmt_list stmt { $2 :: $1 }
-
-stmt:
-    expr SEMI { Expr($1) }
-  | RETURN expr SEMI { Return($2) }
-  | LBRACE stmt_list RBRACE { Block(List.rev $2) }
-  | IF LPAREN expr RPAREN stmt %prec NOELSE { If($3, $5, Block([])) }
-  | IF LPAREN expr RPAREN stmt ELSE stmt    { If($3, $5, $7) }
-  | FOR LPAREN expr_opt SEMI expr_opt SEMI expr_opt RPAREN stmt
-     { For($3, $5, $7, $9) }
-  | WHILE LPAREN expr RPAREN stmt { While($3, $5) }
-
-
-
