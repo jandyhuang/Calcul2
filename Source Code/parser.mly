@@ -124,7 +124,7 @@ vdecl_list:
   | vdecl_list vdecl { $2 :: $1 }
 
 vdecl:
-   INT ID SEMI { $2 }
+   ID ASSIGN expr SEMI{ { name = $1; value = $3; } }
 
 stmt_list:
     /* nothing */  { [] }
