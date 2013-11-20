@@ -122,3 +122,11 @@ vdecl_list:
 
 vdecl:
    ID ASSIGN expr SEMI{ { name = $1; value = $3; } }
+   
+vecter:
+    LVEC float_list RVEC	{ List.rev $2 } 
+
+float_list:
+    /* nothing */		{ [] }
+  | REAL COMMA REAL	{ $3 :: $1 }
+    
