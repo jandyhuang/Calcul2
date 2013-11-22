@@ -3,8 +3,8 @@ type token =
   | MINUS
   | TIMES
   | DIVIDE
-  | POWER
   | INTDIVIDE
+  | POWER
   | MOD
   | ASSIGN
   | DERIV
