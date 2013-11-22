@@ -28,6 +28,8 @@ type stmt =
   | If of expr * stmt * stmt
   | For of expr * expr * expr * stmt
   | While of expr * stmt
+  | Output of expr
+
 
 (* declaration for varibles *)
 type var_decl = {
