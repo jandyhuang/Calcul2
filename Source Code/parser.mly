@@ -1,10 +1,14 @@
-%{ open Ast %}
+%{ 
+open Printf
+open Ast 
+%}
 
 %token PLUS MINUS TIMES DIVIDE POWER INTDIVIDE MOD
 %token ASSIGN DERIV INTEG SQRT SIN COS TAN ASIN ACOS ATAN LOG LN
 %token EQ NEQ LT LEQ GT GEQ AND OR NOT
 %token LPAREN RPAREN LBRACE RBRACE LVEC RVEC SEMI OUTPUT COMMA
 %token IF ELSE FOR WHILE TO DOWNTO
+%token RETURN
 
 %token <int> LITERAL
 %token <float> REAL
@@ -14,6 +18,7 @@
 
 %nonassoc NOELSE
 %nonassoc ELSE
+%right RETURN
 %right OUTPUT
 %right ASSIGN
 %left EQ NEQ
