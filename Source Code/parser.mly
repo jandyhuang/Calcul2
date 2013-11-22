@@ -20,10 +20,10 @@ open Ast
 %right OUTPUT
 %right ASSIGN
 %left EQ NEQ
-%left LT LEQ GT GEQ 
+%left LT LEQ GT GEQ AND OR 
 %left PLUS MINUS
 %left TIMES DIVIDE INTDIVIDE
-%right DERIV INTEG SQRT SIN COS TAN ASIN ACOS ATAN LOG LN
+%right DERIV INTEG SQRT SIN COS TAN ASIN ACOS ATAN LOG LN NOT
 
 %start program
 %type <Ast.program> program
