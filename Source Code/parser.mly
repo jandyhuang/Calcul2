@@ -81,7 +81,6 @@ stmt:
   | WHILE LPAREN expr RPAREN stmt { While($3, $5) }
   | OUTPUT expr SEMI{ Output($2) }
 
-
 expr_opt:
     /* nothing */ { Noexpr }
   | expr          { $1 }
