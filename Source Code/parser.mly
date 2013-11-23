@@ -93,7 +93,6 @@ expr:
   | expr POWER  expr { Binop($1, Pow,   $3) }
   | expr INTDIVIDE expr { Binop($1, IntDiv,  $3) }
   | expr MOD    expr { Binop($1, Mod,   $3) }
-  | expr DIVIDE expr { Binop($1, Div,   $3) }
   | expr EQ     expr { Binop($1, Eq, $3) }
   | expr NEQ    expr { Binop($1, Neq,   $3) }
   | expr LT     expr { Binop($1, Less,  $3) }
