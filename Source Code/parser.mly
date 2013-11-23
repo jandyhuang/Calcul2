@@ -41,11 +41,10 @@ or
 foo(x, y)=x+y;
 */ 
 fdecl:
-   ID LPAREN formals_opt RPAREN LBRACE vdecl_list stmt_list RBRACE
+   ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE
      { { fname = $1;
 	 formals = $3;
-	 locals = List.rev $6;
-	 body = List.rev $7 } }
+	 body = List.rev $6 } }
   | ID LPAREN formals_opt RPAREN ASSIGN expr SEMI
      { { fname = $1; 
 	 unknowns = $3;
@@ -59,9 +58,11 @@ formal_list:
     ID                   { [$1] }
   | formal_list COMMA ID { $3 :: $1 }
 
+/*
 vdecl_list:
-    /* nothing */    { [] }
+                        { [] }
   | vdecl_list vdecl { $2 :: $1 }
+*/
 
 vdecl:
    ID ASSIGN expr SEMI{ { name = $1; value = $3; } }
@@ -131,11 +132,12 @@ actuals_list:
 |expr { [$1] }
 |expr COMMA actuals_list { $3 :: $1 }
 
-  
+/* 
 vecter:
     LVEC float_list RVEC	{ List.rev $2 } 
 
 float_list:
-    /* nothing */		{ [] }
+               		{ [] }
   | REAL COMMA REAL	{ $3 :: $1 }
-    
+*/
+
