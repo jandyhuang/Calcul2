@@ -1,5 +1,5 @@
 (* binary operators *)
-type op = Add | Sub | Mult | Div | Pow | IntDiv | Mod | Equal | Deriv | Integ | Eq | Neq | Less | Leq |
+type op = Add | Sub | Mult | Div | Pow | IntDiv | Mod | Deriv | Integ | Eq | Neq | Less | Leq |
 Greater | Geq | And | Or
 
 (* unary operators *)
