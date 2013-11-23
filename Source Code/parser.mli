@@ -40,8 +40,6 @@ type token =
   | ELSE
   | FOR
   | WHILE
-  | TO
-  | DOWNTO
   | RETURN
   | LITERAL of (int)
   | REAL of (float)
