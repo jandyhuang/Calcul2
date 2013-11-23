@@ -48,7 +48,6 @@ type math_func_decl = {
 type func_decl = {
     fname : string;
     formals : string list;
-    locals : string list;
     body : stmt list;
 }
 
