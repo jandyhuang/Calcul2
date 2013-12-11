@@ -34,6 +34,7 @@ program:
    /* nothing */ { [], [] }
  | program vdecl { ($2 :: fst $1), snd $1 }
  | program fdecl { fst $1, ($2 :: snd $1) }
+ | program math_fdecl { fst $1, ($2 :: snd $1) }
 
 /* Function declaration:
 foo(x, y) {z=3;...} 
@@ -45,7 +46,9 @@ fdecl:
      { { fname = $1;
 	 formals = $3;
 	 body = List.rev $6 } }
-  | ID LPAREN formals_opt RPAREN ASSIGN expr SEMI
+
+math_fdecl:
+   ID LPAREN formals_opt RPAREN ASSIGN expr SEMI
      { { fname = $1; 
 	 unknowns = $3;
 	 formula = $6 } }
