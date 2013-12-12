@@ -34,25 +34,35 @@ program:
    /* nothing */ { [], [] }
  | program vdecl { ($2 :: fst $1), snd $1 }
  | program fdecl { fst $1, ($2 :: snd $1) }
- | program math_fdecl { fst $1, ($2 :: snd $1) }
+
+ | program math_fdecl { ($2 :: fst $1), snd $1 }
 
 /* Function declaration:
 foo(x, y) {z=3;...} 
 or
 foo(x, y)=x+y;
 */ 
+
 fdecl:
    ID LPAREN formals_opt RPAREN LBRACE stmt_list RBRACE
      { { fname = $1;
 	 formals = $3;
 	 body = List.rev $6 } }
 
+/*
 math_fdecl:
    ID LPAREN formals_opt RPAREN ASSIGN expr SEMI
      { { fname = $1; 
 	 unknowns = $3;
 	 formula = $6 } }
+*/
+	
+math_fdecl:
+	ID LPAREN formals_opt RPAREN ASSIGN expr SEMI	{ string_of_math ($1 , $3 , $6) }
 
+vdecl:
+   ID ASSIGN expr SEMI{ string_of_vdecl ($1 , $3) }
+	
 formals_opt:
     /* nothing */ { [] }
   | formal_list   { List.rev $1 }
@@ -67,8 +77,6 @@ vdecl_list:
   | vdecl_list vdecl { $2 :: $1 }
 */
 
-vdecl:
-   ID ASSIGN expr SEMI{ { name = $1; value = $3; } }
 
 stmt_list:
     /* nothing */  { [] }
@@ -131,6 +139,7 @@ expr:
 actuals_opt:
 |{ [] }
 | actuals_list { List.rev $1 }
+
 actuals_list:
 |expr { [$1] }
 |expr COMMA actuals_list { $3 :: $1 }
