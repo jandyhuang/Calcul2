@@ -32,17 +32,21 @@ type stmt =
 
 
 (* declaration for varibles *)
+(*
 type var_decl = {
     name : string;
     value : float;
 }
+*)
 
 (* declaration for math functions *)
+(*
 type math_func_decl = {
     fname : string;
     unknowns : string list;
     formula : expr;
 }
+*)
 
 (* declaration for functions *)
 type func_decl = {
@@ -53,3 +57,7 @@ type func_decl = {
 
 (* definition for type of program *)
 type program = string list * func_decl list
+
+let string_of_vdecl (name, expr)= name ^ "=" ^ String.concat "" expr ^";\n"
+
+let string_of_math (fname, unknowns, formula)= fname ^ "(" ^ String.concat ", " unknowns ^ "){\n" ^ String.concat "" formula ^ "}\n"
