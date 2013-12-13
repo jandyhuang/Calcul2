@@ -11,8 +11,12 @@ rule token = parse
 | '*'      { TIMES }
 | '/'      { DIVIDE }
 | '^'      { POWER }
+
+(*
 | "//"     { INTDIVIDE }
 | '%'      { MOD }
+*)
+
 | '='      { ASSIGN }
 | '\''      { DERIV }
 | '@'      { INTEG }
@@ -53,7 +57,11 @@ rule token = parse
 | "for"    { FOR }
 | "while"  { WHILE }
 | "return" { RETURN }
+
+(*
 | digit+ as lxm { LITERAL(int_of_string lxm) }
+*)
+
 | (digit+'.'digit*)('e'['+''-']?digit+)? | digit+'e'['+''-']?digit+ as lxm { REAL(float_of_string lxm) }
 | ['a'-'z' 'A'-'Z']['a'-'z' 'A'-'Z' '0'-'9' '_']* as lxm { ID(lxm) }
 | eof { EOF }
