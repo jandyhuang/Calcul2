@@ -10,7 +10,7 @@ open Ast
 %token IF ELSE FOR WHILE
 %token RETURN OUTPUT
 
-%token <int> LITERAL
+%token DOLLAR
 %token <float> REAL
 %token <string> ID
 %token EOF
@@ -23,7 +23,7 @@ open Ast
 %left LT LEQ GT GEQ AND OR 
 %left PLUS MINUS
 %left TIMES DIVIDE INTDIVIDE
-%right MOD POWER DERIV INTEG SQRT SIN COS TAN ASIN ACOS ATAN LOG LN NOT
+%right MOD POWER DERIV INTEG SQRT SIN COS TAN ASIN ACOS ATAN LOG LN NOT DOLLAR
 
 %start program
 %type <Ast.program> program
@@ -31,11 +31,13 @@ open Ast
 %%
 
 program:
-   /* nothing */ { [], [] }
- | program vdecl { ($2 :: fst $1), snd $1 }
- | program fdecl { fst $1, ($2 :: snd $1) }
+		{ [] }
+ | program fdecl { $2 :: $1 }
 
+/* 	 { [], [] }
+ | program vdecl { ($2 :: fst $1), snd $1 }
  | program math_fdecl { ($2 :: fst $1), snd $1 }
+*/
 
 /* Function declaration:
 foo(x, y) {z=3;...} 
@@ -49,33 +51,23 @@ fdecl:
 	 formals = $3;
 	 body = List.rev $6 } }
 
-/*
-math_fdecl:
-   ID LPAREN formals_opt RPAREN ASSIGN expr SEMI
-     { { fname = $1; 
-	 unknowns = $3;
-	 formula = $6 } }
-*/
-	
-math_fdecl:
-	ID LPAREN formals_opt RPAREN ASSIGN expr SEMI	{ string_of_math ($1 , $3 , $6) }
-
-vdecl:
-   ID ASSIGN expr SEMI{ string_of_vdecl ($1 , $3) }
-	
 formals_opt:
-    /* nothing */ { [] }
+    /* nothing */  { [] }
   | formal_list   { List.rev $1 }
+
 
 formal_list:
     ID                   { [$1] }
-  | formal_list COMMA ID { $3 :: $1 }
+  | formal_list COMMA ID { $3 :: $1 }  
+  
+  
+actuals_opt:
+	/* nothing */	{ [] }
+  | actuals_list { List.rev $1 }
 
-/*
-vdecl_list:
-                        { [] }
-  | vdecl_list vdecl { $2 :: $1 }
-*/
+actuals_list:
+     expr 				   { [$1] }
+  |actuals_list COMMA expr { $3 :: $1 }
 
 
 stmt_list:
@@ -92,7 +84,14 @@ stmt:
      { For($3, $5, $7, $9) }
   | WHILE LPAREN expr RPAREN stmt { While($3, $5) }
   | OUTPUT expr SEMI{ Output($2) }
+  | ID LPAREN var_list RPAREN ASSIGN expr SEMI { Math_func($1, List.rev $3, $6) }
 
+
+var_list:
+	DOLLAR ID				{ [$2] }
+  | var_list DOLLAR ID 		{ $3 :: $1 }
+ 
+  
 expr_opt:
     /* nothing */ { Noexpr }
   | expr          { $1 }
@@ -103,8 +102,6 @@ expr:
   | expr TIMES  expr { Binop($1, Mult,  $3) }
   | expr DIVIDE expr { Binop($1, Div,   $3) }
   | expr POWER  expr { Binop($1, Pow,   $3) }
-  | expr INTDIVIDE expr { Binop($1, IntDiv,  $3) }
-  | expr MOD    expr { Binop($1, Mod,   $3) }
   | expr EQ     expr { Binop($1, Eq, $3) }
   | expr NEQ    expr { Binop($1, Neq,   $3) }
   | expr LT     expr { Binop($1, Less,  $3) }
@@ -128,7 +125,6 @@ expr:
   | LN expr          {PreUnaop(Ln,$2)} 
   | NOT expr         {PreUnaop(Not,$2)}
 
-  | LITERAL          {Num($1) }
   | REAL             {Real($1)}
   | ID               {Id($1)}
 
@@ -136,13 +132,24 @@ expr:
   | ID LPAREN actuals_opt RPAREN {Call($1,$3)}
   | LPAREN expr RPAREN {$2}
   
-actuals_opt:
-|{ [] }
-| actuals_list { List.rev $1 }
 
-actuals_list:
-|expr { [$1] }
-|expr COMMA actuals_list { $3 :: $1 }
+
+/*
+math_fdecl:
+   ID LPAREN formals_opt RPAREN ASSIGN expr SEMI
+     { { fname = $1; 
+	 unknowns = $3;
+	 formula = $6 } }
+	
+math_fdecl:
+	ID LPAREN formals_opt RPAREN ASSIGN expr SEMI	{ string_of_math ($1 , $3 , $6) }
+*/
+
+/*
+vdecl:
+   ID ASSIGN expr SEMI{ string_of_vdecl ($1 , $3) }
+*/	
+
 
 /* 
 vecter:
@@ -153,3 +160,8 @@ float_list:
   | REAL COMMA REAL	{ $3 :: $1 }
 */
 
+/*
+vdecl_list:
+                        { [] }
+  | vdecl_list vdecl { $2 :: $1 }
+*/
