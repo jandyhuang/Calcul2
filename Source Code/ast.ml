@@ -26,6 +26,18 @@ type stmt =
   | Output of expr
   | Math_func of string * string list * expr
 
+(* declaration for functions *)
+type func_decl = {
+    fname : string;
+    formals : string list;
+    body : stmt list;
+}
+
+(* definition for type of program *)
+type program = func_decl list
+
+
+
 (* declaration for varibles *)
 (*
 type var_decl = {
@@ -43,20 +55,15 @@ type math_func_decl = {
 }
 *)
 
-(* declaration for functions *)
-type func_decl = {
-    fname : string;
-    formals : string list;
-    body : stmt list;
-}
 
-(* definition for type of program *)
-type program = string list * func_decl list
 
+
+
+(*
 let string_of_vdecl (name, expr)= name ^ "=" ^ String.concat "" expr ^";\n"
 
 let string_of_math (fname, unknowns, formula)= fname ^ "(" ^ String.concat ", " 	   unknowns ^ "){\n" ^ String.concat "" formula ^ "}\n"
-(*
+
 let rec string_of_expr = function
     Num(l) -> string_of_int l
   | Real(l) -> string_of_float l
