@@ -108,3 +108,41 @@ let is_assign_call func = function
 	| Assign(_,_) ->true
 	| Call(_,_) ->true
 	| _ ->false
+	
+	
+
+
+(*THis will check each function's validity*)
+let check_func f env =
+		let _dup_name = fun_exist f env in
+                   let _ = env.functions <- (f) ::env.functions in
+		   let _dup_formals = check_fpara_duplicate f in
+			   let _dup_vlocals = check_var_duplicate f in
+				   let _vbody = check_valid_body f env in
+					   let _check_return_result = check_return f env in
+						  							    true
+
+
+(*check whether there is a main function*)
+
+									
+let exists_main env = 
+	if func_name_exist "main" env
+	   then true else raise(Failure("No Main Function exist!"))
+	   
+let exist_v_name vlist vdecl = 
+	let new_fun count x = 
+		if(equal_variable_name vdecl x) then count+1 else count in
+		 let result = List.fold_left new_fun 0 vlist in
+		   if result <=1 then true else raise(Failure("Global Variable has been redefined!"))
+	
+let dup_in_global env = 
+	 List.for_all (exist_v_name env.variables) env.variables
+	 
+let check_program (var_list,fun_list) = 
+	let env = {functions = built_in;variables = var_list} in
+         let _global_check = dup_in_global env in
+	let _dovalidation = List.map (fun f -> check_func f env) fun_list in
+	   let  _mainexist = exists_main env in
+		   let _ = print_endline "\nThe semantic check has been finished!\n" in
+			true 
