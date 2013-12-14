@@ -111,6 +111,16 @@ let is_assign_call func = function
 	
 	
 
+let stmt_list = func.body in
+	 let f id_list stmt = 
+		match stmt with
+		|Expr(expr) -> match expr with 
+                               |Assign(id,expr2)-> id::id_list
+                               |_ -> id_list  
+		|_ -> id_list in
+	  let ids_list = List.fold_left f [] stmt_list in
+		   ids_list  
+
 
 (*THis will check each function's validity*)
 let check_func f env =
@@ -118,9 +128,7 @@ let check_func f env =
                    let _ = env.functions <- (f) ::env.functions in
 		   let _dup_formals = check_fpara_duplicate f in
 			   let _dup_vlocals = check_var_duplicate f in
-				   let _vbody = check_valid_body f env in
-					   let _check_return_result = check_return f env in
-						  							    true
+				   let _vbody = check_valid_body f env in						  							    true
 
 
 (*check whether there is a main function*)
