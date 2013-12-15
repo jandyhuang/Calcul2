@@ -1,6 +1,6 @@
 all: ast.cmi compiler
 compiler: semantics.cmo parser.cmo scanner.cmo compiler.cmo
-	ocamlc -o compiler semantics.cmo parser.cmo scanner.cmo compiler.cmo
+	ocamlc -o calcul semantics.cmo parser.cmo scanner.cmo compiler.cmo
 
 compiler.cmo: compiler.ml
 	ocamlc -c compiler.ml
@@ -27,4 +27,5 @@ ast.cmi: ast.ml
 	ocamlc -c ast.ml
 
 clean:
-	rm -f *.cmo *.cmi parser.mli parser.ml scanner.ml ast.cmi
+	rm -f parser.mli parser.ml scanner.ml ast.cmi testall.log calcul \
+	*.cmo *.cmi *.out
