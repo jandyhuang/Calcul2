@@ -1,11 +1,11 @@
 all: ast.cmi compiler
-compiler: parser.cmo scanner.cmo compiler.cmo
-	ocamlc -o compiler parser.cmo scanner.cmo compiler.cmo
+compiler: semantics.cmo parser.cmo scanner.cmo compiler.cmo
+	ocamlc -o compiler semantics.cmo parser.cmo scanner.cmo compiler.cmo
 
 compiler.cmo: compiler.ml
 	ocamlc -c compiler.ml
 
-scanner.cmo : scanner.ml
+scanner.cmo: scanner.ml
 	ocamlc -c scanner.ml
 
 scanner.ml: scanner.mll
@@ -19,6 +19,9 @@ parser.ml: parser.mli
 
 parser.mli: parser.mly
 	ocamlyacc parser.mly
+
+semantics.cmo: semantics.ml
+	ocamlc -c semantics.ml
 
 ast.cmi: ast.ml
 	ocamlc -c ast.ml
