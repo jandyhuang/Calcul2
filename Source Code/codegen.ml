@@ -1,6 +1,9 @@
 open Ast
 open Printf
 
+let gen_type = function
+    "main" -> "int"
+  | _ -> "double"
 
 let rec gen_expr = function
     Real(l) -> string_of_float l
@@ -29,7 +32,7 @@ let rec gen_expr = function
   
 (* wait to be determined *) 
 let gen_math (fname, unknowns, formula)= 
-	fname ^ "(" ^ String.concat ", " unknowns ^ "){\n" ^ (gen_expr formula) ^ "}\n"
+	fname ^ "(" ^ String.concat ", " unknowns ^ "){\n\t\t" ^ (gen_expr formula) ^ "\n\t}\n"
   
   
 let rec gen_stmt = function
@@ -52,12 +55,16 @@ let rec gen_stmt = function
 let gen_vdecl (name, expr)= "float " ^ name ^ "=" ^ String.concat "" expr ^";\n"
 
 let gen_fdecl fdecl =
-  fdecl.fname ^ "(" ^ String.concat ", " fdecl.formals ^ "){\n" ^
-  String.concat "" (List.map gen_stmt fdecl.body) ^
-  "}\n"
+  let ftype = gen_type (fdecl.fname) in
+  let fname = fdecl.fname in
+  let formal_list = String.concat ", " fdecl.formals in
+  let body = String.concat "\n\t" (List.map gen_stmt fdecl.body) in
+    match fname with
+        "main" -> ftype^" "^fname^"("^formal_list^")\n{\n\tdouble printer;\n\t"^body^"\n\tprintf(\"%lf\\n\",printer);\n\treturn 0;\n}\n"
+      | _ -> ftype^" "^fname^"("^formal_list^")\n{\n\t"^body^"\n}\n"
 
 let gen_program prog =
-  let header = "#include \"calcul2.h\"\n" in
-    let body = String.concat "\n" (List.map gen_fdecl prog) in
+  let header = "#include <cstdio>\n#include \"calcul2.h\"\nusing namespace std;\n" in
+    let fdecls = String.concat "\n" (List.map gen_fdecl prog) in
       let _ = print_endline "Code Generation completed successfully.\n" in
-        header^"\n"^body
+        header^"\n"^fdecls
