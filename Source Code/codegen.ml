@@ -57,4 +57,7 @@ let gen_fdecl fdecl =
   "}\n"
 
 let gen_program prog =
-  String.concat "" (List.map gen_fdecl prog)
+  let header = "#include \"calcul2.h\"\n" in
+    let body = String.concat "\n" (List.map gen_fdecl prog) in
+      let _ = print_endline "Code Generation completed successfully.\n" in
+        header^"\n"^body

@@ -4,5 +4,7 @@ open Printf
         let parse_prog = Parser.program Scanner.token lexbuf in
         let _ = Semantics.check_program parse_prog in
         let prog = Codegen.gen_program parse_prog in
-        print_endline prog
+        let output_cpp = open_out "output.cpp" in
+        let _ = print_endline prog in
+        output_string output_cpp prog
 
