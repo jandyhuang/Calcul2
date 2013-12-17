@@ -33,16 +33,6 @@ let exist_formal_para func fpname =
 	let check func fpname = List.exists (function a -> a = fpname) func.formals in
 	  check func fpname
 	  
-(*6. check whether a 'vname' is declared in the global variable list*)
-		
-let exist_global_variable env vname = 
-	let check env vname = List.exists (function a -> a= vname) env.variables in
-	  check env vname
-	
-
-(*7. A function to check whether a function has a parameter called fpname*)
-let check_exist_para_in_fun func fpname = List.exists (function a->a = fpname) func.formals
-
 
 (*a function to check whether a function has a parameter appears more than once*)  
 let count_fpara func = function a
@@ -80,21 +70,23 @@ let get_math_fun_by_name fname mathf_list =
         with Not_found -> raise(Failure("Math function "^ name ^ " has not been declared!"))
 
 (*a function to check whether a math function name is valid*)        
-let check_math_func_name_valid mfname mathf_list id_list formals_list env= 
-        if (exist_mathf fname mathf_list) then raise(Failure("Math function name: "^ name ^ " has been used!"))
-        else if (exist_id fname id_list) then raise(Failure("Math function name: "^ name ^ " has been used!"))
-        else if (exist_func_name fnmame env) then raise(Failure("Math function name: "^ name ^ " has been used!"))
-        else if (exist_id fnmame formals_list) then raise(Failure("Math function name: "^ name ^ " has been used!"))
+let check_math_func_name_valid mfname mathf_list id_list funcformal env= 
+        if (exist_mathf fname mathf_list) then raise(Failure("Math function name: "^ fname ^ " has been used!"))
+        else if (exist_id fname id_list) then raise(Failure("Math function name: "^ fname ^ " has been used!"))
+        else if (exist_func_name fnmame env) then raise(Failure("Math function name: "^ fname ^ " has been used!"))
+        else if (exist_id fnmame funcformal) then raise(Failure("Math function name: "^ fname ^ " has been used!"))
+
          else true
 
 (*a function to check whether a math function's parameter are valid*)    
-let rec check_math_func_para_valid mfname mathf_list id_list formals_list env = function
+let rec check_math_func_para_valid mfname mathf_list id_list  funcformal env = function
         [] -> true
         |hd::tl -> 
            if (exist_mathf hd mathf_list) then raise(Failure("Math function parameter not valid!"))
            else if (exist_id hd id_list) then raise(Failure("Math function parameter not valid!"))
            else if (exist_func_name hd env) then raise(Failure("Math function parameter not valid!"))
-           else if (exist_id hd formals_list) then raise(Failure("Math function parameter not valid!"))
+            else if (exist_id hd funcformal) then raise(Failure("Math function parameter not valid!"))
+
            else check_math_func_para_valid mfname mathf_list id_list formals_list env tl
 
 (*a function to check whether a math function has a parameter appears more than once*)           
@@ -111,31 +103,31 @@ let check_math_para_duplicate paralist =
 	List.map (count_para paralist) paralist   
 
 (*a function to check whether a id name is valid when defined*)   
-let check_id_valid id mathf_list env=
+let check_id_valid id mathf_list funcformal env=
         if (exist_mathf id mathf_list) then raise(Failure("Math function name: "^ name ^ " has been used!"))
         else if (exist_func_name id env) then raise(Failure("Math function name: "^ name ^ " has been used!"))
-        else if (exist_id id formals_list) then raise(Failure("Math function name: "^ name ^ " has been used!"))
+        else if (exist_id id funcformal) then raise(Failure("Math function name: "^ name ^ " has been used!"))
         else true
 
 
 (*a function to check whether a expr is valid: uses local variables and functions and math functions that has been defined, functions and math functions have parameter that matches*)
-let rec valid_expr expr id_list mathf_list env=
+let rec valid_expr funcformal expr id_list mathf_list env=
          match expr with
 	     |Assign(id, e1) -> if exist_id id id_list 
-	                        then let _ =  valid_expr e1 id_list mathf_list env in id_list
-                                else if (check_id_valid id mathf_list env) then let  id_list= id :: id_list in id_list 
+	                        then let _ =  valid_expr funcformal e1 id_list mathf_list env in id_list
+                                else if (check_id_valid id mathf_list funcformal env) then let  id_list= id :: id_list in id_list 
                                 else raise (Failure("id has been used!")) 
              |Call(fname,exprlist) -> if exist_func_name fname env
 
 				      then let f1 = get_func_by_name fname env in
                                               if (List.length f1.formals == List.length exprlist)
-                                              then let _ = List.map (fun e -> valid_expr e id_list mathf_list env) exprlist in
+                                              then let _ = List.map (fun e -> valid_expr funcformal e id_list mathf_list env) exprlist in
                                               id_list
                                               else raise(Failure("function parameter not match!"))   
 				      else if exist_matchf fname mathf_list
                                            then let (m1,p1)=get_math_fun_by_name fname mathf_list    
                                             if (List.length p1 == List.length exprlist)
-                                                then  let _ = List.map (fun e -> valid_expr e id_list mathf_list env) exprlist in						 
+                                                then  let _ = List.map (fun e -> valid_expr funcformal e id_list mathf_list env) exprlist in						 
                                                 id_list
                                                 else  raise(Failure("math function parameter not match!"))
 
@@ -144,8 +136,8 @@ let rec valid_expr expr id_list mathf_list env=
 	                        then id_list
                                 else raise(Failure("Undefined ID : "^ id ^ "!"))
 
-             | Binop (e1,_,e2)-> let _ =  valid_expr e1 id_list mathf_list env in  let _ =valid_expr e2 id_list mathf_list env in id_list 
-             | PreUnaop(e)-> let _ =  valid_expr e1 id_list mathf_list env in id_list 
+             | Binop (e1,_,e2)-> let _ =  valid_expr funcformal e1 id_list mathf_list env in  let _ =valid_expr funcformal e2 id_list mathf_list env in id_list 
+             | PreUnaop(e)-> let _ =  valid_expr funcformal e1 id_list mathf_list env in id_list 
 
              |_ -> id_list 
         
@@ -189,31 +181,32 @@ let rec check_math_func_body_valid mfname paralist id_list mathf_list env expr=
 (*a function to check whether the body of a func is valid*)          
 let check_func_body_valid func env=
      let stmt_lt = func.body in
-	 let rec f id_list mathf_list stmt_list =
+       let funcformal= func.formals in 
+	  let rec f id_list mathf_list stmt_list =
                  if (List.length stmt_list == 0) then true  
                  else let stmt_tl= List.tl stmt_list
                          match List.hd stmt_list  with
-		          |Expr(expr) -> let idl=valid_expr expr id_list mathf_list env in f idl mathf_list stmt_tl 
+		          |Expr(expr) -> let idl=valid_expr funcformal expr id_list mathf_list env in f idl mathf_list stmt_tl 
 
-                          |Math_func(mfname, paralist ,expr) ->let _= check_math_func_name_valid mfname mathf_list id_list func.formals env in
-                                                                 let _= check_math_func_para_valid mfname paralist mathf_list id_list func.formals env in
+                          |Math_func(mfname, paralist ,expr) ->let _= check_math_func_name_valid mfname mathf_list id_list funcformal env in
+                                                                 let _= check_math_func_para_valid mfname paralist mathf_list id_list funcformal env in
                                                                    let _=check_math_para_duplicate paralist
                                                                      let _= check_math_func_body_valid mfname paralist id_list mathf_list env expr in 
                                                                         let mathf_list=(mfname, paralist)::mathf_list 
                                                                             in f id_list mathf_list stmt_tl   
-                          |Return(expr)  -> let idl=valid_expr expr id_list mathf_list env in f idl mathf_list stmt_tl 
+                          |Return(expr)  -> let idl=valid_expr funcformal expr id_list mathf_list env in f idl mathf_list stmt_tl 
 
-                          |If(expr,stmt1,stmt2)  -> let idl=valid_expr expr id_list mathf_list env in 
+                          |If(expr,stmt1,stmt2)  -> let idl=valid_expr funcformal expr id_list mathf_list env in 
                                                      (f idl mathf_list stmt1) && (f idl mathf_list stmt2) && (f id_list mathf_list stmt_tl)
  
-                          |For(expr1,expr2,expr3,stmt) -> let idl1=valid_expr expr1 id_list mathf_list env in 
-                                                          let idl2=valid_expr expr2 idl1 mathf_list env in  
-                                                            let idl3=valid_expr expr3 idl2 mathf_list env in  
+                          |For(expr1,expr2,expr3,stmt) -> let idl1=valid_expr funcformal expr1 id_list mathf_list env in 
+                                                          let idl2=valid_expr funcformal expr2 idl1 mathf_list env in  
+                                                            let idl3=valid_expr funcformal expr3 idl2 mathf_list env in  
                                                                       (f idl3 mathf_list stmt) && (f id_list mathf_list stmt_tl)
 
-                          |While(expr,stmt)  -> let idl=valid_expr expr id_list mathf_list env in (f idl mathf_list stmt) && (f id_list mathf_list stmt_tl)
+                          |While(expr,stmt)  -> let idl=valid_expr funcformal expr id_list mathf_list env in (f idl mathf_list stmt) && (f id_list mathf_list stmt_tl)
 
-                          |Output(expr)  -> let idl=valid_expr expr id_list mathf_list env in f idl mathf_list stmt_tl 
+                          |Output(expr)  -> let idl=valid_expr funcformal expr id_list mathf_list env in f idl mathf_list stmt_tl 
 
                           |Block(stmtlist) -> (f id_list mathf_list stmtlist) && (f id_list mathf_list stmt_tl)
               
