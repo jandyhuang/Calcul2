@@ -3,16 +3,13 @@ open Ast
 (* is to be modified according to the AST*)
 type env = {
 	mutable functions : func_decl list;
-	variables : string list;
-	}
+}
 	
 (*1. It is used to test whether a function's name is equal to a string 'name'*)
-
 let func_equal_name name = function
 	| func -> func.fname = name
 	
 (*2. This function is to check whether a function's name has been defined more than once*)
-
 let fun_exist func env = 
 	let name = func.fname in
 	   try
@@ -22,16 +19,16 @@ let fun_exist func env =
 			with Not_found -> false
 			
 (*3.This function is to check whether a function's name exist in the env*)
-let func_name_exist name env = List.exists (func_equal_name name) env.functions
+let exist_func_name name env = List.exists (func_equal_name name) env.functions
 
 (*4.This function will directly give you the function object if you give its name*)
-let return_func_given_name name env = 
+let get_func_by_name name env = 
 	try
 		   let result = List.find (func_equal_name name) env.functions in
 			      result
   with Not_found -> raise(Failure("Function "^ name ^ " has not been declared!"))
   
-  (*5. check whether a 'fpname' is in the formal parameter list of a function*)
+(*5. check whether a 'fpname' is in the formal parameter list of a function*)
 let exist_formal_para func fpname = 
 	let check func fpname = List.exists (function a -> a = fpname) func.formals in
 	  check func fpname
@@ -47,22 +44,7 @@ let exist_global_variable env vname =
 let check_exist_para_in_fun func fpname = List.exists (function a->a = fpname) func.formals
 
 
-(*8. The function will check whether a function name "fun_name" has a corresponding function in the environment*)
-
-let find_func func_name env = 
-	try 
-		 let _ = List.find (func_equal_name func_name) env.functions in
-		      true
-	with Not_found -> raise(Failure("Function "^ func_name ^" is not found in the function defination list"))
-	
-(*9. The function will check whether a variable name conflicts with a function name *)
-let varname_funcname_conflict varname env=
-  try
-     let _	=List.find (func_equal_name varname) env.functions in
-           true
- with Not_found -> raise(Failure("The name of variable "^ varname ^" conflicts with function "^ varname ^" "))
-	
-	(*10. This function will check whether a (var_type*string) has a para_name that appears more than once in a function's parameter list*)	
+(*a function to check whether a function has a parameter appears more than once*)  
 let count_fpara func = function a
   -> let f count b = 
 		  if b=a then count+1
@@ -73,93 +55,186 @@ let count_fpara func = function a
 					then raise(Failure("Duplicate parameter in function " ^ func.fname))
 					else
 						count
-
-
-(*11. This function will automatically check whether there is parameter duplication in function defination*)
 						
 let check_fpara_duplicate func = 
 	List.map (count_fpara func) func.formals
-	
-
-
-(*12. This function will check whether a (var_type*string) has a var_name that appears more than once in a function's local variable list*)
-(*
-let count_var func = function (_,b)
-  -> let f count (_,c) = 
-		  if c=b then count+1
-			else count
-			in
-			  let count = List.fold_left f 0 func.locals in
-			     if count > 1
-					then raise(Failure("Duplicate parameter "^ b ^ " in function " ^ func.fname))
-					else
-						count
-						*)
-(*13. The following function will judge whether an expression is assign or call*)
-
-let is_assign_call func = function
-	| Assign(_,_) ->true
-	| Call(_,_) ->true
-	| _ ->false
-	
-	
-
-
-(*15. The following function will tell you whether a function's body is valid*)
-
-let check_valid_body func env = 
-(*16.*) let rec check_stmt = 
-		function
-			|Block(stmt_list) -> 
-				let _  = List.map (fun(x) -> check_stmt x) stmt_list in true(*block case*)
-			|Expr(expr)->true
-			|Return(expr)-> true
-			|If(expr,stmt1,stmt2) ->
-								if (check_stmt stmt1) && (check_stmt stmt2) then true
-								else raise(Failure("Invalid statement in the if statement in function: "^ func.fname))
-			|For(a,b,c,stmt1) -> 
-				        if check_stmt stmt1 then true 
-				        else raise(Failure("Invalid statement or expressions in For statement in function:"^ func.fname))
-			|While(a,stmt1)-> if  check_stmt stmt1 then true 
-				else raise(Failure("Invalid statement in While statement in function:"^ func.fname))
-			|Output(expr)-> true
-			|Math_func(s, s_list ,expr)-> true(* don't know how to check*) 
-				in (*end of check_stmt*)
-      let _ = List.map (check_stmt) func.body in
-			true						     
-
-
-(*17.THis will check each function's validity*)
-let check_func f env =
-		let _dup_name = fun_exist f env in
-                 	let _ = env.functions <- (f) ::env.functions in
-		   let _dup_formals = check_fpara_duplicate f in
-			   (*let _dup_vlocals = check_var_duplicate f in*)
-					(*let _vbody = check_valid_body f env in*)
-				   		true
 
 
 (*18. check whether there is a main function*)
 let exists_main env = 
-	if func_name_exist "main" env
+	if exist_func_name "main" env
 	   then true else raise(Failure("No Main Function exist!"))
 	   
-let equal_variable_name a b = 
-	a = b
+(*a function to check whether a id is in a list*)
+let exist_id id id_list= List.exists (function x -> x = id) id_list
 
-let exist_v_name vlist vdecl = 
-	let new_fun count x = 
-		if(equal_variable_name vdecl x) then count+1 else count in
-		 let result = List.fold_left new_fun 0 vlist in
-		   if result <=1 then true else raise(Failure("Global Variable has been redefined!"))
-	
-let dup_in_global env = 
-	 List.for_all (exist_v_name env.variables) env.variables
-	 
-let check_program (*(var_list,*)fun_list(*)*) = 
-	let env = {functions = [] (*built_in*);variables = [] (*var_list*)} in
-         let _global_check = dup_in_global env in
-	let _dovalidation = List.map (fun f -> check_func f env) fun_list in
-	   let  _mainexist = exists_main env in
-		   let _ = print_endline "\nThe semantic check has been finished!\n" in
-			true 
+(*a function to check whether a fname is in a list*)
+let exist_mathf fname mathf_list = List.exists (function ( a, _) -> a = fname) id_list
+
+
+(*a function to get math function given the math function name*)
+let get_math_fun_by_name fname mathf_list = 
+	try
+		   let result = List.find (function ( a, _) -> a = fname) mathf_list  in
+			      result
+        with Not_found -> raise(Failure("Math function "^ name ^ " has not been declared!"))
+
+(*a function to check whether a math function name is valid*)        
+let check_math_func_name_valid mfname mathf_list id_list formals_list env= 
+        if (exist_mathf fname mathf_list) then raise(Failure("Math function name: "^ name ^ " has been used!"))
+        else if (exist_id fname id_list) then raise(Failure("Math function name: "^ name ^ " has been used!"))
+        else if (exist_func_name fnmame env) then raise(Failure("Math function name: "^ name ^ " has been used!"))
+        else if (exist_id fnmame formals_list) then raise(Failure("Math function name: "^ name ^ " has been used!"))
+         else true
+
+(*a function to check whether a math function's parameter are valid*)    
+let rec check_math_func_para_valid mfname mathf_list id_list formals_list env = function
+        [] -> true
+        |hd::tl -> 
+           if (exist_mathf hd mathf_list) then raise(Failure("Math function parameter not valid!"))
+           else if (exist_id hd id_list) then raise(Failure("Math function parameter not valid!"))
+           else if (exist_func_name hd env) then raise(Failure("Math function parameter not valid!"))
+           else if (exist_id hd formals_list) then raise(Failure("Math function parameter not valid!"))
+           else check_math_func_para_valid mfname mathf_list id_list formals_list env tl
+
+(*a function to check whether a math function has a parameter appears more than once*)           
+let count_para paralist = function 
+  b -> let f count c = if c=b then count+1 else count
+	   in
+	      let count = List.fold_left f 0 paralist in
+			     if count > 1
+					then raise(Failure("Duplicate parameter!"))
+					else
+						count
+
+let check_math_para_duplicate paralist = 
+	List.map (count_para paralist) paralist   
+
+(*a function to check whether a id name is valid when defined*)   
+let check_id_valid id mathf_list env=
+        if (exist_mathf id mathf_list) then raise(Failure("Math function name: "^ name ^ " has been used!"))
+        else if (exist_func_name id env) then raise(Failure("Math function name: "^ name ^ " has been used!"))
+        else if (exist_id id formals_list) then raise(Failure("Math function name: "^ name ^ " has been used!"))
+        else true
+
+
+(*a function to check whether a expr is valid: uses local variables and functions and math functions that has been defined, functions and math functions have parameter that matches*)
+let rec valid_expr expr id_list mathf_list env=
+         match expr with
+	     |Assign(id, e1) -> if exist_id id id_list 
+	                        then let _ =  valid_expr e1 id_list mathf_list env in id_list
+                                else if (check_id_valid id mathf_list env) then let  id_list= id :: id_list in id_list 
+                                else raise (Failure("id has been used!")) 
+             |Call(fname,exprlist) -> if exist_func_name fname env
+
+				      then let f1 = get_func_by_name fname env in
+                                              if (List.length f1.formals == List.length exprlist)
+                                              then let _ = List.map (fun e -> valid_expr e id_list mathf_list env) exprlist in
+                                              id_list
+                                              else raise(Failure("function parameter not match!"))   
+				      else if exist_matchf fname mathf_list
+                                           then let (m1,p1)=get_math_fun_by_name fname mathf_list    
+                                            if (List.length p1 == List.length exprlist)
+                                                then  let _ = List.map (fun e -> valid_expr e id_list mathf_list env) exprlist in						 
+                                                id_list
+                                                else  raise(Failure("math function parameter not match!"))
+
+                                           else raise(Failure("Undefined function or math function: "^ fname ^ "is used!"))
+             |Id(id)  -> if exist_id id id_list 
+	                        then id_list
+                                else raise(Failure("Undefined ID : "^ id ^ "!"))
+
+             | Binop (e1,_,e2)-> let _ =  valid_expr e1 id_list mathf_list env in  let _ =valid_expr e2 id_list mathf_list env in id_list 
+             | PreUnaop(e)-> let _ =  valid_expr e1 id_list mathf_list env in id_list 
+
+             |_ -> id_list 
+        
+
+let rec check_math_func_body_valid mfname paralist id_list mathf_list env expr=
+             match expr with
+                 |Id(id)  -> if (exist_id id id_list || exist_id id paralist)
+	                        then true
+                                else if exist_matchf id mathf_list
+                                     then let (m1,p1)= get_math_fun_by_name id mathf_list in
+                                             if (p1 = paralist) 
+                                             then true
+                                             else raise(Failure("math function parameter not match!"))
+
+                                     else raise(Failure("Undefined ID : "^ id ^ "is used!"))
+
+                 |Call(fname,exprlist) -> if exist_func_name fname env
+
+				      then let f1 = get_func_by_name fname env in
+                                              if (List.length f1.formals == List.length exprlist)
+                                              then let _ = List.map (fun e -> check_math_func_body_valid mfname paralist id_list mathf_list env e) exprlist in
+                                              true
+                                              else raise(Failure("function parameter not match!"))   
+				      else if exist_matchf fname mathf_list
+                                           then let (m1,p1)= get_math_fun_by_name fname mathf_list in
+                                                   if (List.length p1 == List.length exprlist)
+                                                   then  let _ = List.map (fun e ->check_math_func_body_valid mfname paralist id_list mathf_list env e) exprlist in						 
+                                                   true
+                                                   else  raise(Failure("math function parameter not match!"))
+
+                                           else raise(Failure("Undefined function or math function: "^ fname ^ "is used!"))
+            
+                 | Binop (e1,_,e2)-> let _ = check_math_func_body_valid mfname paralist id_list mathf_list env e1 in
+                                     let _ = check_math_func_body_valid mfname paralist id_list mathf_list env e2 in true 
+                 | PreUnaop(e)-> let _ =  check_math_func_body_valid mfname paralist id_list mathf_list env e in true 
+                 |_ -> true
+
+
+
+
+(*a function to check whether the body of a func is valid*)          
+let check_func_body_valid func env=
+     let stmt_lt = func.body in
+	 let rec f id_list mathf_list stmt_list =
+                 if (List.length stmt_list == 0) then true  
+                 else let stmt_tl= List.tl stmt_list
+                         match List.hd stmt_list  with
+		          |Expr(expr) -> let idl=valid_expr expr id_list mathf_list env in f idl mathf_list stmt_tl 
+
+                          |Math_func(mfname, paralist ,expr) ->let _= check_math_func_name_valid mfname mathf_list id_list func.formals env in
+                                                                 let _= check_math_func_para_valid mfname paralist mathf_list id_list func.formals env in
+                                                                   let _=check_math_para_duplicate paralist
+                                                                     let _= check_math_func_body_valid mfname paralist id_list mathf_list env expr in 
+                                                                        let mathf_list=(mfname, paralist)::mathf_list 
+                                                                            in f id_list mathf_list stmt_tl   
+                          |Return(expr)  -> let idl=valid_expr expr id_list mathf_list env in f idl mathf_list stmt_tl 
+
+                          |If(expr,stmt1,stmt2)  -> let idl=valid_expr expr id_list mathf_list env in 
+                                                     (f idl mathf_list stmt1) && (f idl mathf_list stmt2) && (f id_list mathf_list stmt_tl)
+ 
+                          |For(expr1,expr2,expr3,stmt) -> let idl1=valid_expr expr1 id_list mathf_list env in 
+                                                          let idl2=valid_expr expr2 idl1 mathf_list env in  
+                                                            let idl3=valid_expr expr3 idl2 mathf_list env in  
+                                                                      (f idl3 mathf_list stmt) && (f id_list mathf_list stmt_tl)
+
+                          |While(expr,stmt)  -> let idl=valid_expr expr id_list mathf_list env in (f idl mathf_list stmt) && (f id_list mathf_list stmt_tl)
+
+                          |Output(expr)  -> let idl=valid_expr expr id_list mathf_list env in f idl mathf_list stmt_tl 
+
+                          |Block(stmtlist) -> (f id_list mathf_list stmtlist) && (f id_list mathf_list stmt_tl)
+              
+         in f [] [] stmt_lt
+
+
+
+
+(*THis will check each function's validity*)
+let check_func f env =
+		let _dup_name = fun_exist f env in
+                   let _ = env.functions <- (f) ::env.functions in
+		       let _dup_formals = check_fpara_duplicate f in
+				   let _vbody = check_func_body_valid f env in
+						  							    true
+
+         
+         
+let check_program fun_list = 
+        let env = {functions = [];} in
+	    let _dovalidation = List.map (fun f -> check_func_valid f env) fun_list in
+	         let  _mainexist = exists_main env in
+		      let _ = print_endline "\nThe semantic check has been finished!\n" in
+			  true 
