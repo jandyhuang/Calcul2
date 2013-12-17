@@ -1,6 +1,6 @@
 all: ast.cmi compiler
-compiler: semantics.cmo parser.cmo scanner.cmo compiler.cmo
-	ocamlc -o calcul semantics.cmo parser.cmo scanner.cmo compiler.cmo
+compiler: codegen.cmo semantics.cmo parser.cmo scanner.cmo compiler.cmo
+	ocamlc -o calcul codegen.cmo semantics.cmo parser.cmo scanner.cmo compiler.cmo
 
 compiler.cmo: compiler.ml
 	ocamlc -c compiler.ml
@@ -22,6 +22,9 @@ parser.mli: parser.mly
 
 semantics.cmo: semantics.ml
 	ocamlc -c semantics.ml
+
+codegen.cmo: codegen.ml
+	ocamlc -c codegen.ml
 
 ast.cmi: ast.ml
 	ocamlc -c ast.ml

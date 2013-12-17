@@ -51,6 +51,7 @@ rule token = parse
 | ';'      { SEMI }
 | ':'      { OUTPUT }
 | ','      { COMMA }
+| '$'      { DOLLAR }
 
 | "if"     { IF }
 | "else"   { ELSE }

@@ -86,11 +86,11 @@ stmt:
   | OUTPUT expr SEMI{ Output($2) }
   | ID LPAREN var_list RPAREN ASSIGN expr SEMI { Math_func($1, List.rev $3, $6) }
 
-
-var_list:
-	DOLLAR ID				{ [$2] }
-  | var_list DOLLAR ID 		{ $3 :: $1 }
  
+var_list:
+	DOLLAR ID			{ [$2] }
+  | var_list COMMA DOLLAR ID 		{ $4 :: $1 }
+  
   
 expr_opt:
     /* nothing */ { Noexpr }
