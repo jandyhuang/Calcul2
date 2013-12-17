@@ -27,12 +27,7 @@ let get_func_by_name name env =
 		   let result = List.find (func_equal_name name) env.functions in
 			      result
   with Not_found -> raise(Failure("Function "^ name ^ " has not been declared!"))
-  
-(*5. check whether a 'fpname' is in the formal parameter list of a function*)
-let exist_formal_para func fpname = 
-	let check func fpname = List.exists (function a -> a = fpname) func.formals in
-	  check func fpname
-	  
+  	  
 
 (*a function to check whether a function has a parameter appears more than once*)  
 let count_fpara func = function a
