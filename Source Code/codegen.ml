@@ -5,27 +5,36 @@ let gen_type = function
     "main" -> "int"
   | _ -> "double"
 
+
+let var_list = ref []
+let exist_id id id_list= List.exists (function x -> x = id) !id_list
+let gen_var var =
+	match (exist_id var var_list) with
+	true -> var
+  | false -> ignore(var_list := var :: !var_list); "double "^var
+  
+  
 let rec gen_expr = function
     Real(l) -> string_of_float l
-  | Id(s) -> s
+  | Id(s) -> gen_var s
   | PreUnaop(preop, e) ->
-	  "" ^
-	  (match preop with
-	  Sqrt -> "sqrt" | Sin -> "sin" | Cos -> "cos" | Tan -> "tan" | ASin -> "asin"
-	  | ACos -> "acos" | ATan -> "atan" | Log -> "log" | Ln -> "ln" | Not -> "!")
-	  ^ "(" ^ gen_expr e ^ ")"
+          "" ^
+          (match preop with
+          Sqrt -> "sqrt" | Sin -> "sin" | Cos -> "cos" | Tan -> "tan" | ASin -> "asin"
+          | ACos -> "acos" | ATan -> "atan" | Log -> "log" | Ln -> "ln" | Not -> "!")
+          ^ "(" ^ gen_expr e ^ ")"
   | Binop(e1, o, e2) ->
       gen_expr e1 ^ " " ^
       (match o with
-		Add -> "+" | Sub -> "-" | Mult -> "*" | Div -> "/"
-	  | And -> "&&" | Or -> "||" | Eq -> "==" | Neq -> "!="
+                Add -> "+" | Sub -> "-" | Mult -> "*" | Div -> "/"
+          | And -> "&&" | Or -> "||" | Eq -> "==" | Neq -> "!="
       | Less -> "<" | Leq -> "<=" | Greater -> ">" | Geq -> ">="
-	  
-	  |	Pow -> "pow" | Deriv -> "'" | Integ -> "@"				(*Pow and Deriv and Integ to be determined*)
-	  
-	  ) ^ " " ^
+          
+          |        Pow -> "pow" | Deriv -> "'" | Integ -> "@"                                (*Pow and Deriv and Integ to be determined*)
+          
+          ) ^ " " ^
       gen_expr e2
-  | Assign(v, e) -> v ^ " = " ^ gen_expr e
+  | Assign(v, e) -> gen_var v^ " = " ^ gen_expr e
   | Call(fname, el) -> fname ^ "(" ^ String.concat ", " (List.map gen_expr el) ^ ")"
   | Noexpr -> ""
   
@@ -101,7 +110,7 @@ let gen_math (fname, unknowns, formula)=
   let addfname = add_fname (fname, unknowns) in
   let addtree = add_tree (fname, unknowns, formula) in
     addfname ^ addtree
-	(*fname ^ "(" ^ String.concat ", " unknowns ^ "){\n\t\t" ^ (gen_expr formula) ^ "\n\t}\n"*)
+        (*fname ^ "(" ^ String.concat ", " unknowns ^ "){\n\t\t" ^ (gen_expr formula) ^ "\n\t}\n"*)
 
 let rec gen_stmt = function
     Block(stmts) ->
@@ -119,14 +128,34 @@ let rec gen_stmt = function
   | Output(e) -> gen_call_func e
   | Math_func(s, sl, e) -> gen_math (s, sl, e)
   
-(* needed to work on it *)  
-let gen_vdecl (name, expr)= "float " ^ name ^ "=" ^ String.concat "" expr ^";\n"
 
+(*
+module StringMap = Map.Make(String)
+(* StringMap to store var names for each function, key is func name that in func_map, value is var_list *)
+let func_map = StringMap.empty
+(* add vars to var_map *)
+let add_var (fname, var_list) = 
+	List.map (fun(var) -> StringMap.add fname var func_map) var_list
+
+(* needed to work on it *)  
+let gen_var (fname, vname)= 
+	match StringMap.find fname func_map with
+    l when List.mem vname l == true -> vname
+  | Not_found -> let func_map = StringMap.add fname ((StringMap.find fname func_map)::vname) func_map in "double "^vname
+*)
+
+
+
+  
+
+let gen_formals formals = ignore(List.map (fun(x)->var_list := x :: !var_list) formals); List.map (fun(l) -> "double "^l) formals  
+	
 let gen_fdecl fdecl =
   let ftype = gen_type (fdecl.fname) in
   let fname = fdecl.fname in
-  let formal_list = String.concat ", " fdecl.formals in
+  let formal_list = String.concat ", " (gen_formals fdecl.formals) in
   let body = String.concat "\n\t" (List.map gen_stmt fdecl.body) in
+    ignore(var_list := []);
     match fname with
         "main" -> ftype^" "^fname^"("^formal_list^")\n{\n\tdouble printer;\n\n\t"^body^"\n\treturn 0;\n}\n"
       | _ -> ftype^" "^fname^"("^formal_list^")\n{\n\t"^body^"\n}\n"
