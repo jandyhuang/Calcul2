@@ -42,7 +42,7 @@ let rec gen_expr = function
 let rec pad (unks, fname) =
   match unks with
     [] -> []
-  | u :: tl -> (fname^".push_back(\""^u^"\");") :: (pad (tl, fname))
+  | u :: tl -> (fname^"_var.push_back(\""^u^"\");") :: (pad (tl, fname))
 
 let rec get_index unk = function
     [] -> 0
@@ -97,7 +97,7 @@ let rec pad_call (el, fname) =
   | u :: tl -> (fname^"_now.push_back(\""^u^"\");") :: (pad_call (tl, fname))
 
 let rec gen_value fname = function
-    Real(l) -> fname^"_now.pushback(\""^(string_of_float l)^"\");\n\t"
+    Real(l) -> fname^"_now.push_back(\""^(string_of_float l)^"\");\n\t"
 
 let rec gen_call_func = function
     Call(fname, el) -> fname ^ "_now.clear();\n\t" ^ String.concat "" (List.map (gen_value fname) el)
