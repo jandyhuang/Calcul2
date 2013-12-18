@@ -66,7 +66,7 @@ let get_math_fun_by_name fname mathf_list =
 
 (*a function to check whether a math function name is valid*)        
 let check_math_func_name_valid mfname mathf_list id_list funcformal env= 
-        if (exist_mathf mfname mathf_list)&&(exist_id mfname id_list)&&(exist_func_name mfname env)&&(exist_id mfname funcformal)
+        if (exist_mathf mfname mathf_list)||(exist_id mfname id_list)||(exist_func_name mfname env)||(exist_id mfname funcformal)
         then raise(Failure("Math function name: "^ mfname ^ " has been used!"))
         else true
 
@@ -96,7 +96,7 @@ let check_math_para_duplicate paralist =
 
 (*a function to check whether a id name is valid when defined*)   
 let check_id_valid id mathf_list funcformal env=
-        if (exist_mathf id mathf_list)&&(exist_func_name id env)&&(exist_id id funcformal) then raise(Failure("Math function name: "^ id ^ " has been used!"))
+        if (exist_mathf id mathf_list)||(exist_func_name id env)||(exist_id id funcformal) then raise(Failure("Math function name: "^ id ^ " has been used!"))
         else true
 
 
