@@ -7,7 +7,11 @@ let gen_type = function
 
 
 let var_list = ref []
+
+let mathf_list = ref []
+
 let exist_id id id_list= List.exists (function x -> x = id) !id_list
+
 let gen_var var =
 	match (exist_id var var_list) with
 	true -> var
@@ -51,11 +55,17 @@ let rec get_index unk = function
 let new_node fname decls =
   fname ^ ".AddNode(new FNode(" ^ decls ^ "));\n\t"
 
+let add_node fname decls =
+  fname ^ ".AddNode(" ^ decls ^ ");\n\t"
+
 let rec gen_tree_op (fname, unknowns) = function
     Real(l) -> new_node fname ("T_VAL,"^(string_of_float l))
-  | Id(s) -> new_node fname ("T_VAR,0,"^(string_of_int (get_index s unknowns)))
+  | Id(s) -> 
+    ( match (exist_id s mathf_list) with
+        true -> add_node fname (s^".Copy()")
+      | false -> new_node fname ("T_VAR,0,"^(string_of_int (get_index s unknowns)))
+    )
   | Binop(e1, o, e2) -> 
-      gen_tree_op (fname, unknowns) e1 ^
         ( match o with
             Add -> new_node fname "T_OP,0,PLUS" 
           | Sub -> new_node fname "T_OP,0,MINUS"
@@ -73,6 +83,7 @@ let rec gen_tree_op (fname, unknowns) = function
           | Deriv -> new_node fname "T_OP,0,DERIV"
           | Integ -> new_node fname "T_OP,0,INTEG"
         )
+      ^ gen_tree_op (fname, unknowns) e1
       ^ gen_tree_op (fname, unknowns) e2
   | Noexpr -> ""
 
@@ -80,6 +91,9 @@ let rec construct_tree (fname, unknowns, formula) =
   gen_tree_op (fname, unknowns) formula
 
 let add_fname (fname, unknowns) = 
+  let _ = match (exist_id fname mathf_list) with
+      false -> ignore(mathf_list := fname :: !mathf_list); "" 
+    | _ -> "" in
   let dcl_fname = "vector<string> "^fname^"_var;\n\t" in
   let pbk_fname = String.concat "\n\t" (pad (unknowns, fname)) in
   let dcl_fval = "vector<double> "^fname^"_now;\n\t" in
@@ -97,12 +111,21 @@ let rec pad_call (el, fname) =
   | u :: tl -> (fname^"_now.push_back(\""^u^"\");") :: (pad_call (tl, fname))
 
 let rec gen_value fname = function
-    Real(l) -> fname^"_now.push_back(\""^(string_of_float l)^"\");\n\t"
+    Real(l) -> fname^"_now.push_back("^(string_of_float l)^");\n\t"
+
+let gen_math_args = function
+    Id(s) -> s
+  | _ -> ""
 
 let rec gen_call_func = function
     Call(fname, el) -> fname ^ "_now.clear();\n\t" ^ String.concat "" (List.map (gen_value fname) el)
       ^ "printer = " ^ fname ^ ".GetValue(" ^ fname ^ "_now);\n\t" 
       ^ "printf(\"%lf\\n\",printer);\n\t"
+  | Binop(e1, o, e2) -> 
+        gen_math_args e1 ^ "_now.clear();\n\t" ^ gen_math_args e1 ^ "." ^
+        ( match o with
+          Deriv -> "Derive(\"" ^ gen_math_args e2 ^ "\") -> Print();\n\t" )
+
   | _ -> ""
 
 (* wait to be determined *) 

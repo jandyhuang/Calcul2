@@ -535,6 +535,7 @@ public:
 	void AddNode(FNode*node);
 	void Print();
 	FTree*Derive(int _var);
+	FTree*Derive(string var);
 	double GetIntegal(vector<double>_begin, vector<double>_end);
 	double GetValue(vector<double>_var);
 	void Reduce();
@@ -565,6 +566,11 @@ FTree* FTree::Derive(int _var){
 	FTree*tmp=new FTree(tmp_variable,root->Derive(_var));
 	tmp->root->Reduce();
 	return tmp;
+}
+
+FTree* FTree::Derive(string var){
+	int pos = std::find(variable.begin(), variable.end(), var) - variable.begin();
+	return Derive(pos);
 }
 
 double FTree::GetValue(vector<double>_var){
