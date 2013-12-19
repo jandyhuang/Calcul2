@@ -3,7 +3,7 @@ open Printf
 open Ast 
 %}
 
-%token PLUS MINUS TIMES DIVIDE INTDIVIDE POWER  MOD
+%token PLUS MINUS TIMES DIVIDE POWER
 %token ASSIGN DERIV INTEG SQRT SIN COS TAN ASIN ACOS ATAN LOG LN
 %token EQ NEQ LT LEQ GT GEQ AND OR NOT
 %token LPAREN RPAREN LBRACE RBRACE LVEC RVEC SEMI OUTPUT COMMA
@@ -22,8 +22,8 @@ open Ast
 %left EQ NEQ
 %left LT LEQ GT GEQ AND OR 
 %left PLUS MINUS
-%left TIMES DIVIDE INTDIVIDE
-%right MOD POWER DERIV INTEG SQRT SIN COS TAN ASIN ACOS ATAN LOG LN NOT DOLLAR
+%left TIMES DIVIDE
+%right POWER DERIV INTEG SQRT SIN COS TAN ASIN ACOS ATAN LOG LN NOT DOLLAR
 
 %start program
 %type <Ast.program> program
@@ -32,7 +32,7 @@ open Ast
 
 program:
 		{ [] }
- | program fdecl { $2 :: $1 }
+ | fdecl program { $1 :: $2 }
 
 /* 	 { [], [] }
  | program vdecl { ($2 :: fst $1), snd $1 }
