@@ -581,10 +581,13 @@ double FTree::GetIntegal(vector<double>_begin, vector<double>_end,vector<double>
 	int n=_begin.size();
 	double ans=0;
 	int cnt=(int)pow(TOT,1.0/n);
-	_now.push_back(0);
-	for(int i=0;i<cnt;i++){
-		_now[_var]=_begin[n-1]+(_end[n-1]-_begin[n-1])/cnt;
-		ans+=(_var==n-1?GetValue(_now)/TOT:GetIntegal(_begin,_end, _now, _var+1));
+	_now.push_back(_begin[_var]);
+	double last=(_var==n-1?GetValue(_now):GetIntegal(_begin,_end,_now,_var+1)),tmp;
+	for(int i=1;i<=cnt;i++){
+		_now[_var]=_begin[_var]+i*(_end[_var]-_begin[_var])/cnt;
+		tmp=(_var==n-1?GetValue(_now):GetIntegal(_begin,_end,_now,_var+1));
+		ans+=(_end[_var]-_begin[_var])*(tmp+last)/2/(cnt);
+		last=tmp;
 	}
 	return ans;
 }
