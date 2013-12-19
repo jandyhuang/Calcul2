@@ -30,8 +30,7 @@ let rec gen_expr = function
   | Binop(e1, o, e2) ->
       (match o with 
         Pow -> "pow(" ^ gen_expr e1 ^ ", " ^ gen_expr e2 ^ ")"
-      | op -> 
-	   gen_expr e1 ^ " " ^
+      | op -> gen_expr e1 ^ " " ^
       	  (match op with
             Add -> "+" | Sub -> "-" | Mult -> "*" | Div -> "/"
           | And -> "&&" | Or -> "||" | Eq -> "==" | Neq -> "!="
@@ -40,7 +39,7 @@ let rec gen_expr = function
           (*| Pow -> "pow" | Deriv -> "'" | Integ -> "@" *)   (*Pow and Deriv and Integ to be determined*)
           
           ) ^ " " ^ gen_expr e2
-	)
+	     )
   | Assign(v, e) -> gen_var v^ " = " ^ gen_expr e
   | Call(fname, el) -> fname ^ "(" ^ String.concat ", " (List.map gen_expr el) ^ ")"
   | Noexpr -> ""
@@ -158,41 +157,21 @@ let rec gen_call_func = function
     Call(fname, el) -> fname ^ "_now.clear();\n\t" ^ String.concat "" (List.map (gen_value fname) el)
       ^ "printer = " ^ fname ^ ".GetValue(" ^ fname ^ "_now);\n\t" 
       ^ "printf(\"%lf\\n\",printer);\n\t" ^ "cout << \"\\n\";\n\t"
-  | Binop(e1, o, e2) -> 
+  | Binop(e1, o, e2) as _expr -> 
         (  match o with
             Deriv -> gen_math_args e1 ^ "_now.clear();\n\t" ^ gen_math_args e1 ^ "." ^
                       "Derive(\"" ^ gen_math_args e2 ^ "\") -> Print();\n\t"
           | Integ -> gen_integ (gen_math_args e1) e2 ^ "cout << " ^ get_integ (gen_math_args e1)
-          | _ -> "cout << " ^
-            (match o with 
-        	Pow -> "pow(" ^ gen_expr e1 ^ ", " ^ gen_expr e2 ^ ")"
-      	      | op ->  gen_expr e1 ^ " " ^
-      	          (match op with
-        	       Add -> "+" | Sub -> "-" | Mult -> "*" | Div -> "/"
-             	     | And -> "&&" | Or -> "||" | Eq -> "==" | Neq -> "!="
-      	     	     | Less -> "<" | Leq -> "<=" | Greater -> ">" | Geq -> ">="
-          
-                   ) ^ " " ^ gen_expr e2 ^ ";\n\t"
-	    )
-        ^ "cout << \"\\n\";\n\t"
+          | _ -> "cout << " ^ gen_expr _expr ^ ";\n\t"
+        ) ^ "cout << \"\\n\";\n\t"
   | Id(s) -> 
     (  match (exist_id s mathf_list) with
         true -> s ^ ".Print();\n\t"
       | false -> "cout << " ^ s ^ ";\n\t"
     ) ^ "cout << \"\\n\";\n\t"
-  | _ -> ""
+  | _ -> "" 
 
-      (match o with 
-        Pow -> "pow(" ^ gen_expr e1 ^ ", " ^ gen_expr e2 ^ ")"
-      | op -> 
-	   gen_expr e1 ^ " " ^
-      	  (match op with
-            Add -> "+" | Sub -> "-" | Mult -> "*" | Div -> "/"
-          | And -> "&&" | Or -> "||" | Eq -> "==" | Neq -> "!="
-      	  | Less -> "<" | Leq -> "<=" | Greater -> ">" | Geq -> ">="
-          
-          ) ^ " " ^ gen_expr e2 ^ ";\n\t"
-	)
+
 
 
 (* wait to be determined *) 
