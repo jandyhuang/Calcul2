@@ -58,6 +58,11 @@ let new_node fname decls =
 let add_node fname decls =
   fname ^ ".AddNode(" ^ decls ^ ");\n\t"
 
+let gen_math_args = function
+    Id(s) -> s
+  | Real(l) -> string_of_float l
+  | _ -> ""
+
 let rec gen_tree_op (fname, unknowns) = function
     Real(l) -> new_node fname ("T_VAL,"^(string_of_float l))
   | Id(s) -> 
@@ -80,11 +85,30 @@ let rec gen_tree_op (fname, unknowns) = function
           | Greater -> new_node fname "T_OP,0,GREATER"
           | Geq -> new_node fname "T_OP,0,GREATEREQUAL"
           | Pow -> new_node fname "T_OP,0,POWER"
-          | Deriv -> new_node fname "T_OP,0,DERIV"
-          | Integ -> new_node fname "T_OP,0,INTEG"
+          | Deriv -> add_node fname (gen_math_args e1 ^ "." ^ "Derive(\"" 
+                     ^ gen_math_args e2 ^ "\") -> Copy()")
+          (*| Integ -> new_node fname "T_OP,0,INTEG"*)
         )
-      ^ gen_tree_op (fname, unknowns) e1
-      ^ gen_tree_op (fname, unknowns) e2
+        ^ 
+        ( match o with
+            Deriv -> ""
+          | _ -> gen_tree_op (fname, unknowns) e1 
+            ^ gen_tree_op (fname, unknowns) e2
+        )
+  | PreUnaop(preop, e) ->
+        ( match preop with
+            Sqrt -> new_node fname "T_OP,0,SQRT" 
+          | Sin -> new_node fname "T_OP,0,SIN"
+          | Cos -> new_node fname "T_OP,0,COS"
+          | Tan -> new_node fname "T_OP,0,TAN"
+          | ASin -> new_node fname "T_OP,0,ASIN"
+          | ACos -> new_node fname "T_OP,0,ACOS"
+          | ATan -> new_node fname "T_OP,0,ATAN"
+          | Log -> new_node fname "T_OP,0,LOG"
+          | Ln -> new_node fname "T_OP,0,LN"
+          | Not -> new_node fname "T_OP,0,NOT"
+        )
+        ^ gen_tree_op (fname, unknowns) e
   | Noexpr -> ""
 
 let rec construct_tree (fname, unknowns, formula) =
@@ -113,11 +137,6 @@ let rec pad_call (el, fname) =
 let rec gen_value fname = function
     Real(l) -> fname^"_now.push_back("^(string_of_float l)^");\n\t"
 
-let gen_math_args = function
-    Id(s) -> s
-  | Real(l) -> string_of_float l
-  | _ -> ""
-
 let rec gen_begin_end (fname, el) =
     fname ^ "_begin.clear();\n\t" ^ fname ^ "_end.clear();\n\t" ^
     (match el with
@@ -141,6 +160,13 @@ let rec gen_call_func = function
             Deriv -> gen_math_args e1 ^ "_now.clear();\n\t" ^ gen_math_args e1 ^ "." ^
                       "Derive(\"" ^ gen_math_args e2 ^ "\") -> Print();\n\t"
           | Integ -> gen_integ (gen_math_args e1) e2 ^ "cout << " ^ get_integ (gen_math_args e1)
+          | _ -> "cout << " ^ gen_expr e1 ^ " " ^
+            (match o with
+                Add -> "+" | Sub -> "-" | Mult -> "*" | Div -> "/"
+              | And -> "&&" | Or -> "||" | Eq -> "==" | Neq -> "!="
+              | Less -> "<" | Leq -> "<=" | Greater -> ">" | Geq -> ">="
+              | Pow -> "pow" | Deriv -> "'" | Integ -> "@"
+            ) ^ " " ^ gen_expr e2 ^ ";\n\t"
         )
         ^ "cout << \"\\n\";\n\t"
   | Id(s) -> 
