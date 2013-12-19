@@ -34,7 +34,7 @@ let rec gen_expr = function
           | And -> "&&" | Or -> "||" | Eq -> "==" | Neq -> "!="
       | Less -> "<" | Leq -> "<=" | Greater -> ">" | Geq -> ">="
           
-          |        Pow -> "pow" | Deriv -> "'" | Integ -> "@"                                (*Pow and Deriv and Integ to be determined*)
+          |        Pow -> "pow" | Deriv -> "'" | Integ -> "@"
           
           ) ^ " " ^
       gen_expr e2
@@ -96,7 +96,7 @@ let add_fname (fname, unknowns) =
     | _ -> "" in
   let dcl_fname = "vector<string> "^fname^"_var;\n\t" in
   let pbk_fname = String.concat "\n\t" (pad (unknowns, fname)) in
-  let dcl_fval = "vector<double> "^fname^"_now;\n\t" in
+  let dcl_fval = "vector<double> "^fname^"_begin, "^fname^"_end, "^fname^"_now;\n\t" in
   let dcl_tree = "FTree "^fname^"("^fname^"_var);\n\t" in 
     dcl_fname ^ pbk_fname ^ "\n\t" ^ dcl_fval ^ dcl_tree ^ "\n\t"
 
@@ -115,17 +115,39 @@ let rec gen_value fname = function
 
 let gen_math_args = function
     Id(s) -> s
+  | Real(l) -> string_of_float l
   | _ -> ""
+
+let rec gen_begin_end (fname, el) =
+    fname ^ "_begin.clear();\n\t" ^ fname ^ "_end.clear();\n\t" ^
+    (match el with
+      a :: b :: _ -> fname ^ "_begin.push_back(" ^ gen_math_args a ^ ");\n\t" ^
+                     fname ^ "_end.push_back(" ^ gen_math_args b ^ ");\n\t"
+    | _ -> "")
+
+let gen_integ fname = function
+      Call(unk, el) -> gen_begin_end (fname, el)
+    | _ -> ""
+
+let get_integ fname =
+    fname ^ ".GetIntegal(" ^ fname ^ "_begin, " ^ fname ^ "_end);\n\t"
 
 let rec gen_call_func = function
     Call(fname, el) -> fname ^ "_now.clear();\n\t" ^ String.concat "" (List.map (gen_value fname) el)
       ^ "printer = " ^ fname ^ ".GetValue(" ^ fname ^ "_now);\n\t" 
-      ^ "printf(\"%lf\\n\",printer);\n\t"
+      ^ "printf(\"%lf\\n\",printer);\n\t" ^ "cout << \"\\n\";\n\t"
   | Binop(e1, o, e2) -> 
-        gen_math_args e1 ^ "_now.clear();\n\t" ^ gen_math_args e1 ^ "." ^
-        ( match o with
-          Deriv -> "Derive(\"" ^ gen_math_args e2 ^ "\") -> Print();\n\t" )
-
+        (  match o with
+            Deriv -> gen_math_args e1 ^ "_now.clear();\n\t" ^ gen_math_args e1 ^ "." ^
+                      "Derive(\"" ^ gen_math_args e2 ^ "\") -> Print();\n\t"
+          | Integ -> gen_integ (gen_math_args e1) e2 ^ "cout << " ^ get_integ (gen_math_args e1)
+        )
+        ^ "cout << \"\\n\";\n\t"
+  | Id(s) -> 
+    (  match (exist_id s mathf_list) with
+        true -> s ^ ".Print();\n\t"
+      | false -> "cout << " ^ s ^ ";\n\t"
+    ) ^ "cout << \"\\n\";\n\t"
   | _ -> ""
 
 (* wait to be determined *) 
