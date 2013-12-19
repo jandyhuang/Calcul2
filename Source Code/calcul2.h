@@ -253,6 +253,7 @@ void FNode::Reduce(){
 			left->Reduce();
 		}
 		right->Reduce();
+
 		if(op==PLUS && left->IsSame(right)){
 			op=TIMES;
 			left->type=T_VAL;
@@ -360,9 +361,9 @@ void FNode::Reduce(){
 		}
 
 		if((left==NULL || left->type==T_VAL) && right->type==T_VAL){
-			type=T_VAL;
 			vector<double> empty;
 			value=GetValue(empty);
+			type=T_VAL;
 			left->Destroy();
 			right->Destroy();
 			left=right=NULL;
