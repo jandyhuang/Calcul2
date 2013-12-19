@@ -28,16 +28,19 @@ let rec gen_expr = function
           | ACos -> "acos" | ATan -> "atan" | Log -> "log" | Ln -> "ln" | Not -> "!")
           ^ "(" ^ gen_expr e ^ ")"
   | Binop(e1, o, e2) ->
-      gen_expr e1 ^ " " ^
-      (match o with
-                Add -> "+" | Sub -> "-" | Mult -> "*" | Div -> "/"
+      (match o with 
+        Pow -> "pow(" ^ gen_expr e1 ^ ", " ^ gen_expr e2 ^ ")"
+      | op -> 
+	   gen_expr e1 ^ " " ^
+      	  (match op with
+            Add -> "+" | Sub -> "-" | Mult -> "*" | Div -> "/"
           | And -> "&&" | Or -> "||" | Eq -> "==" | Neq -> "!="
-      | Less -> "<" | Leq -> "<=" | Greater -> ">" | Geq -> ">="
+      	  | Less -> "<" | Leq -> "<=" | Greater -> ">" | Geq -> ">="
           
-          |        Pow -> "pow" | Deriv -> "'" | Integ -> "@"
+          (*| Pow -> "pow" | Deriv -> "'" | Integ -> "@" *)   (*Pow and Deriv and Integ to be determined*)
           
-          ) ^ " " ^
-      gen_expr e2
+          ) ^ " " ^ gen_expr e2
+	)
   | Assign(v, e) -> gen_var v^ " = " ^ gen_expr e
   | Call(fname, el) -> fname ^ "(" ^ String.concat ", " (List.map gen_expr el) ^ ")"
   | Noexpr -> ""
@@ -160,14 +163,17 @@ let rec gen_call_func = function
             Deriv -> gen_math_args e1 ^ "_now.clear();\n\t" ^ gen_math_args e1 ^ "." ^
                       "Derive(\"" ^ gen_math_args e2 ^ "\") -> Print();\n\t"
           | Integ -> gen_integ (gen_math_args e1) e2 ^ "cout << " ^ get_integ (gen_math_args e1)
-          | _ -> "cout << " ^ gen_expr e1 ^ " " ^
-            (match o with
-                Add -> "+" | Sub -> "-" | Mult -> "*" | Div -> "/"
-              | And -> "&&" | Or -> "||" | Eq -> "==" | Neq -> "!="
-              | Less -> "<" | Leq -> "<=" | Greater -> ">" | Geq -> ">="
-              | Pow -> "pow" | Deriv -> "'" | Integ -> "@"
-            ) ^ " " ^ gen_expr e2 ^ ";\n\t"
-        )
+          | _ -> "cout << " ^
+            (match o with 
+        	Pow -> "pow(" ^ gen_expr e1 ^ ", " ^ gen_expr e2 ^ ")"
+      	      | op ->  gen_expr e1 ^ " " ^
+      	          (match op with
+        	       Add -> "+" | Sub -> "-" | Mult -> "*" | Div -> "/"
+             	     | And -> "&&" | Or -> "||" | Eq -> "==" | Neq -> "!="
+      	     	     | Less -> "<" | Leq -> "<=" | Greater -> ">" | Geq -> ">="
+          
+                   ) ^ " " ^ gen_expr e2 ^ ";\n\t"
+	    )
         ^ "cout << \"\\n\";\n\t"
   | Id(s) -> 
     (  match (exist_id s mathf_list) with
@@ -175,6 +181,19 @@ let rec gen_call_func = function
       | false -> "cout << " ^ s ^ ";\n\t"
     ) ^ "cout << \"\\n\";\n\t"
   | _ -> ""
+
+      (match o with 
+        Pow -> "pow(" ^ gen_expr e1 ^ ", " ^ gen_expr e2 ^ ")"
+      | op -> 
+	   gen_expr e1 ^ " " ^
+      	  (match op with
+            Add -> "+" | Sub -> "-" | Mult -> "*" | Div -> "/"
+          | And -> "&&" | Or -> "||" | Eq -> "==" | Neq -> "!="
+      	  | Less -> "<" | Leq -> "<=" | Greater -> ">" | Geq -> ">="
+          
+          ) ^ " " ^ gen_expr e2 ^ ";\n\t"
+	)
+
 
 (* wait to be determined *) 
 let gen_math (fname, unknowns, formula)= 
@@ -198,23 +217,6 @@ let rec gen_stmt = function
   
   | Output(e) -> gen_call_func e
   | Math_func(s, sl, e) -> gen_math (s, sl, e)
-  
-
-(*
-module StringMap = Map.Make(String)
-(* StringMap to store var names for each function, key is func name that in func_map, value is var_list *)
-let func_map = StringMap.empty
-(* add vars to var_map *)
-let add_var (fname, var_list) = 
-	List.map (fun(var) -> StringMap.add fname var func_map) var_list
-
-(* needed to work on it *)  
-let gen_var (fname, vname)= 
-	match StringMap.find fname func_map with
-    l when List.mem vname l == true -> vname
-  | Not_found -> let func_map = StringMap.add fname ((StringMap.find fname func_map)::vname) func_map in "double "^vname
-*)
-
 
 
   
@@ -226,7 +228,7 @@ let gen_fdecl fdecl =
   let fname = fdecl.fname in
   let formal_list = String.concat ", " (gen_formals fdecl.formals) in
   let body = String.concat "\n\t" (List.map gen_stmt fdecl.body) in
-    ignore(var_list := []);
+    ignore(var_list := []);ignore(mathf_list := []);
     match fname with
         "main" -> ftype^" "^fname^"("^formal_list^")\n{\n\tdouble printer;\n\n\t"^body^"\n\treturn 0;\n}\n"
       | _ -> ftype^" "^fname^"("^formal_list^")\n{\n\t"^body^"\n}\n"
