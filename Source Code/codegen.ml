@@ -150,9 +150,13 @@ let rec pad_call (el, fname) =
 
 (* generate the cpp code for getting values of a function *)
 let rec gen_value fname = function
+    s -> fname^"_now.push_back("^gen_expr s^");\n\t"
+  | _ -> ""
+(*
     Real(l) -> fname^"_now.push_back("^(string_of_float l)^");\n\t"
+  | Id(s) -> fname^"_now.push_back("^s^");\n\t"
   | _ -> "" 
-
+*)
 (* generate the cpp code for setting the integal arguments *)
 let rec gen_begin_end (fname, el) =
     fname ^ "_begin.clear();\n\t" ^ fname ^ "_end.clear();\n\t" ^
@@ -172,9 +176,11 @@ let get_integ fname =
 
 (* handles a call expression *)
 let rec gen_call_func = function
-    Call(fname, el) -> fname ^ "_now.clear();\n\t" ^ String.concat "" (List.map (gen_value fname) el)
+    Call(fname, el) as _func -> if exist_id fname mathf_list then (
+	fname ^ "_now.clear();\n\t" ^ String.concat "" (List.map (gen_value fname) el)
       ^ "printer = " ^ fname ^ ".GetValue(" ^ fname ^ "_now);\n\t" 
-      ^ "printf(\"%lf\\n\",printer);\n\t" ^ "cout << \"\\n\";\n\t"
+      ^ "printf(\"%lf\\n\",printer);\n\t" ^ "cout << \"\\n\";\n\t")
+				else "cout << " ^ gen_expr _func ^ "<<endl;\n\t"
   | Binop(e1, o, e2) as _expr -> 
         (  match o with
             Deriv -> gen_math_args e1 ^ "_now.clear();\n\t" ^ gen_math_args e1 ^ "." ^
