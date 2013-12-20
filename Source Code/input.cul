@@ -1,8 +1,0 @@
-#* exception Failure("Using math function that parameter not match!")*#
-
-main(){
-x=3;
-h($x)=x+1;
-g($x,$y)=x+y+1;
-f($x)=h+g;
-}
