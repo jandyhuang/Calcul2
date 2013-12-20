@@ -6,7 +6,7 @@ open Ast
 %token PLUS MINUS TIMES DIVIDE POWER
 %token ASSIGN DERIV INTEG SQRT SIN COS TAN ASIN ACOS ATAN LOG LN
 %token EQ NEQ LT LEQ GT GEQ AND OR NOT
-%token LPAREN RPAREN LBRACE RBRACE LVEC RVEC SEMI OUTPUT COMMA
+%token LPAREN RPAREN LBRACE RBRACE SEMI OUTPUT COMMA
 %token IF ELSE FOR WHILE
 %token RETURN OUTPUT
 
@@ -133,35 +133,3 @@ expr:
   | LPAREN expr RPAREN {$2}
   
 
-
-/*
-math_fdecl:
-   ID LPAREN formals_opt RPAREN ASSIGN expr SEMI
-     { { fname = $1; 
-	 unknowns = $3;
-	 formula = $6 } }
-	
-math_fdecl:
-	ID LPAREN formals_opt RPAREN ASSIGN expr SEMI	{ string_of_math ($1 , $3 , $6) }
-*/
-
-/*
-vdecl:
-   ID ASSIGN expr SEMI{ string_of_vdecl ($1 , $3) }
-*/	
-
-
-/* 
-vecter:
-    LVEC float_list RVEC	{ List.rev $2 } 
-
-float_list:
-               		{ [] }
-  | REAL COMMA REAL	{ $3 :: $1 }
-*/
-
-/*
-vdecl_list:
-                        { [] }
-  | vdecl_list vdecl { $2 :: $1 }
-*/
