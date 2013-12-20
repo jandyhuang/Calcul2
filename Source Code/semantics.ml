@@ -179,7 +179,7 @@ let check_func_body_valid func env=
 		          |Expr(expr) -> let idl=valid_expr funcformal expr id_list mathf_list env in f idl mathf_list stmt_tl 
 
                           |Math_func(mfname, paralist ,expr) ->let _= check_math_func_name_valid mfname mathf_list id_list funcformal env in
-                    (*Need to be modified,Type is not compatible *) (*let _= check_math_func_para_valid mfname paralist mathf_list id_list funcformal env in*)
+                                                                 let _= check_math_func_para_valid mfname  mathf_list id_list funcformal env paralist in
                                                                    let _=check_math_para_duplicate paralist in
                                                                      let _= check_math_func_body_valid mfname paralist id_list mathf_list env expr in 
                                                                         let mathf_list=(mfname, paralist)::mathf_list 
