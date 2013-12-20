@@ -1,12 +1,12 @@
 fibo(x)
 {
 	if (x < 2) return 1;
-	return fibo(x - 1) + fib(x - 2);
+	return fibo(x - 1) + fibo(x - 2);
 }
 
 main()
 {
-	print(fibo(0));
-	print(fibo(1));
-	print(fibo(5));
+	:(fibo(0));
+	:(fibo(1));
+	:(fibo(5));
 }
