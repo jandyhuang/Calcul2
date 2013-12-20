@@ -11,9 +11,11 @@ int main()
 	vector<double> f_begin, f_end, f_now;
 	FTree f(f_var);
 	
+	f.AddNode(new FNode(T_OP,0,MINUS));
 	f.AddNode(new FNode(T_OP,0,POWER));
 	f.AddNode(new FNode(T_VAR,0,0));
 	f.AddNode(new FNode(T_VAR,0,0));
+	f.AddNode(new FNode(T_VAL,1.));
 	
 	vector<string> g_var;
 	g_var.push_back("x");
@@ -32,11 +34,17 @@ int main()
 	f.Derive("x") -> Print();
 	cout << "\n";
 	
-	f_begin.clear();
-	f_end.clear();
-	f_begin.push_back(2.);
-	f_end.push_back(5.);
-	cout << f.GetIntegal(f_begin, f_end);
+	g_begin.clear();
+	g_end.clear();
+	g_begin.push_back(1.);
+	g_end.push_back(5.);
+	cout << g.GetIntegal(g_begin, g_end);
+	cout << "\n";
+	
+	f_now.clear();
+	f_now.push_back(5.);
+	printer = f.GetValue(f_now);
+	printf("%lf\n",printer);
 	cout << "\n";
 	
 	return 0;
