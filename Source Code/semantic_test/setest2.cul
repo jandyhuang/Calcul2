@@ -1,0 +1,7 @@
+#* Failure("No Main Function exist!") *#
+
+
+add(x,y){
+	return x+y;
+}
+

@@ -1,0 +1,11 @@
+#*Failure("function parameter not match!")*#
+
+add(x,y){
+  return x+y;
+}
+
+main(){
+x=3;
+y=1+add(3,5,2);
+}
+

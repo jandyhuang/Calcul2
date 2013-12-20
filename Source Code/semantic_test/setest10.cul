@@ -1,0 +1,8 @@
+#*Failure("Derivation is not properly used!")*#
+
+
+main(){
+f($x)=x*x+2;
+:f'(y);
+}
+

@@ -1,0 +1,11 @@
+#*Failure("Undefined ID : x!")*#
+
+
+main(){
+
+{ x=3; }
+
+y=x+1;
+}
+
+

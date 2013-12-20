@@ -1,0 +1,8 @@
+#*Failure("Integral is not properly used!")*#
+
+
+main(){
+f($x)=x*x+2;
+:f'(x);
+:h@x(1,3,5);
+}

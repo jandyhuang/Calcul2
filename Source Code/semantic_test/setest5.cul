@@ -1,0 +1,8 @@
+#*exception Failure("Math function has duplicate parameter!")*#
+
+
+main(){
+x=3;
+f=1;
+h($y,$y)=y+1;
+}

@@ -1,0 +1,12 @@
+#* Failure("Undefined function or math function: add1 is used!")*#
+
+
+add(x,y){
+	return x+y;
+}
+
+main(){
+x=3;
+add1(x,y);
+}
+

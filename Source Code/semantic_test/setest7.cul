@@ -1,0 +1,8 @@
+#*exception Failure("ID : t not valid!")*#
+
+
+main(){
+x=3;
+y=t+1;
+}
+

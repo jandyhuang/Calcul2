@@ -203,6 +203,71 @@ let rec check_math_func_body_valid mfname paralist id_list mathf_list env expr=
 
 
 
+let rec check_output_valid paralist id_list mathf_list env expr=
+             match expr with
+                 |Id(id)  -> if (exist_id id id_list || exist_id id paralist || exist_mathf id mathf_list)
+
+	                     then true
+                             else raise(Failure("Invalid ID : "^ id ^ " in return!"))
+
+                 |Call(fname,exprlist) -> if exist_func_name fname env
+
+				      then let f1 = get_func_by_name fname env in
+                                              if (List.length f1.formals == List.length exprlist)
+                                              then let _ = List.map (fun e ->  check_output_valid paralist id_list mathf_list env e) exprlist in
+                                              true
+                                              else raise(Failure("function parameter not match!"))   
+				      else if exist_mathf fname mathf_list
+                                           then let (m1,p1)= get_math_fun_by_name fname mathf_list in
+                                                   if (List.length p1 == List.length exprlist)
+                                                   then  let _ = List.map (fun e ->check_output_valid paralist id_list mathf_list env e) exprlist in						 
+                                                   true
+                                                   else  raise(Failure("math function parameter not match!"))
+
+                                           else raise(Failure("Undefined function or math function: "^ fname ^ "is used!"))
+            
+                 | Binop (e1,o, e2)->          
+                          ( match o with 
+                             Deriv -> ( match e1 with 
+                                        Id(id1)  ->  if exist_mathf id1 mathf_list then 
+                                                                    ( match e2 with 
+                                                                              Id(id2)  ->  let (m1,p1)= get_math_fun_by_name id1 mathf_list in
+                                                                                           if exist_id id2 p1 then true                                                                                           else raise(Failure("Derivation is not properly used!"))
+                                                                                           
+                                                                             | _ -> raise(Failure("Derivation is not properly used!"))
+                                                                    )
+                                                    
+                                                     else  raise(Failure("Derivation is not properly used!"))
+
+                                       | _ -> raise(Failure("Derivation is not properly used!")) 
+                                      )
+                            
+                             |Integ -> ( match e1 with 
+                                        Id(id1)  ->  if exist_mathf id1 mathf_list then 
+                                                                    ( match e2 with 
+                                                                             Call(a,elist)  ->  let (m1,p1)= get_math_fun_by_name id1 mathf_list in
+                                                                                           if  exist_id a p1 &&  List.length elist=2 then true
+                                                                                           else raise(Failure("Integral is not properly used!"))
+                                                                                           
+                                                                             | _ -> raise(Failure("Integral is not properly used!"))
+                                                                             
+                                                                             )
+                                                    
+                                                     else  raise(Failure("Integral is not properly used!"))
+
+                                       | _ -> raise(Failure("Integral is not properly used!")) )
+                             
+                             
+                             |_ -> let _ = check_output_valid paralist id_list mathf_list env e1 in
+                                     let _ = check_output_valid paralist id_list mathf_list env e2 in true 
+
+                             )
+
+                                 
+                 | PreUnaop(e1,e2)-> true 
+                 |_ -> true
+
+
 
 (*a function to check whether the body of a func is valid*)          
 let check_func_body_valid func env=
@@ -230,9 +295,9 @@ let check_func_body_valid func env=
                                                             let idl3=valid_expr funcformal expr3 idl2 mathf_list env in  
                                                                       (f idl3 mathf_list [stmt;stmt]) && (f id_list mathf_list stmt_tl)
 
-                          |While(expr,stmt)  -> let idl=valid_expr funcformal expr id_list mathf_list env in (f idl mathf_list [stmt;stmt]) && (f id_list mathf_list stmt_tl)
+                          |While(expr,stmt)  -> let idl = valid_expr funcformal expr id_list mathf_list env in (f idl mathf_list [stmt;stmt]) && (f id_list mathf_list stmt_tl)
 
-                          |Output(expr)  -> let idl=valid_expr funcformal expr id_list mathf_list env in f idl mathf_list stmt_tl 
+                          |Output(expr)  -> let _=check_output_valid funcformal id_list mathf_list env expr in f id_list mathf_list stmt_tl 
 
                           |Block(stmtlist) -> (f id_list mathf_list stmtlist) && (f id_list mathf_list stmt_tl)
               

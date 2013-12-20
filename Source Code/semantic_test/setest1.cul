@@ -1,0 +1,8 @@
+#* Failure("Duplicate parameter in function add") *#
+add(x,x){
+	return x+y;
+}
+
+main(){
+x=3;
+}

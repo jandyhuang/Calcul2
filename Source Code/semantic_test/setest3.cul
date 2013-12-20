@@ -1,0 +1,15 @@
+#* Failure("Function whose name is add has been defined more than once") *#
+
+
+add(x,y){
+	return x+y;
+}
+
+add(x){
+	return x;
+}
+
+main(){
+x=3;
+}
+
