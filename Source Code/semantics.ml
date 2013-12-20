@@ -14,7 +14,7 @@ let fun_exist func env =
 	let name = func.fname in
 	   try
 			   let _ = List.find (func_equal_name name) env.functions in
-				   let e = "Function whose name is "^ name ^" has been defined more than once" in
+				   let e = "Function whose name "^ name ^" has been defined more than once" in
 					     raise (Failure e)
 			with Not_found -> false
 			
@@ -87,7 +87,7 @@ let count_para paralist = function
 	   in
 	      let count = List.fold_left f 0 paralist in
 			     if count > 1
-					then raise(Failure("Duplicate parameter!"))
+					then raise(Failure("Math function has Duplicate parameter!"))
 					else
 						count
 
@@ -105,7 +105,7 @@ let rec valid_expr funcformal expr id_list mathf_list env=
          match expr with
 	     |Assign(id, e1) -> if exist_id id id_list 
 	                        then let _ =  valid_expr funcformal e1 id_list mathf_list env in id_list
-                                else if (check_id_valid id mathf_list funcformal env) then let  id_list= id :: id_list in id_list 
+                                else if (check_id_valid id mathf_list funcformal env) then let _ =  valid_expr funcformal e1 id_list mathf_list env in let id_list= id :: id_list in id_list 
                                 else raise (Failure("id has been used!")) 
              |Call(fname,exprlist) -> if exist_func_name fname env
 
@@ -121,13 +121,49 @@ let rec valid_expr funcformal expr id_list mathf_list env=
                                                 id_list
                                                 else  raise(Failure("math function parameter not match!"))
 
-                                           else raise(Failure("Undefined function or math function: "^ fname ^ "is used!"))
+                                           else raise(Failure("Undefined function or math function: "^ fname ^ " is used!"))
              |Id(id)  -> if exist_id id id_list 
 	                        then id_list
-                                else raise(Failure("Undefined ID : "^ id ^ "!"))
+                                else raise(Failure("ID : "^ id ^ " not valid!"))
 
-             | Binop (e1,_,e2)-> let _ =  valid_expr funcformal e1 id_list mathf_list env in  let _ =valid_expr funcformal e2 id_list mathf_list env in id_list 
-             | PreUnaop(e1,e2)-> let _ =  valid_expr funcformal e2 id_list mathf_list env in id_list 
+             |Binop (e1,o,e2)-> 
+                             ( match o with 
+                             Deriv -> ( match e1 with 
+                                        Id(id1)  ->  if exist_mathf id1 mathf_list then 
+                                                                    ( match e2 with 
+                                                                              Id(id2)  ->  let (m1,p1)= get_math_fun_by_name id1 mathf_list in
+                                                                                           if exist_id id2 p1 then id_list
+                                                                                           else raise(Failure("Derivation is not properly used!"))
+                                                                                           
+                                                                             | _ -> raise(Failure("Derivation is not properly used!"))
+                                                                    )
+                                                    
+                                                     else  raise(Failure("Derivation is not properly used!"))
+
+                                       | _ -> raise(Failure("Derivation is not properly used!")) 
+                                      )
+                            
+                             |Integ -> ( match e1 with 
+                                        Id(id1)  ->  if exist_mathf id1 mathf_list then 
+                                                                    ( match e2 with 
+                                                                             Call(a,elist)  ->  let (m1,p1)= get_math_fun_by_name id1 mathf_list in
+                                                                                           if  exist_id a p1 &&  List.length elist=2 then id_list
+                                                                                           else raise(Failure("Derivation is not properly used!"))
+                                                                                           
+                                                                             | _ -> raise(Failure("Derivation is not properly used!"))
+                                                                             
+                                                                             )
+                                                    
+                                                     else  raise(Failure("Derivation is not properly used!"))
+
+                                       | _ -> raise(Failure("Derivation is not properly used!")) )
+                             
+                             
+                             |_ -> let _ =  valid_expr funcformal e1 id_list mathf_list env in  
+                                     let _ =valid_expr funcformal e2 id_list mathf_list env in 
+                                         id_list  
+                             )
+             | PreUnaop(o,e2)-> let _ =  valid_expr funcformal e2 id_list mathf_list env in id_list 
 
              |_ -> id_list 
         
@@ -140,7 +176,7 @@ let rec check_math_func_body_valid mfname paralist id_list mathf_list env expr=
                                      then let (m1,p1)= get_math_fun_by_name id mathf_list in
                                              if (p1 = paralist) 
                                              then true
-                                             else raise(Failure("math function parameter not match!"))
+                                             else raise(Failure("Using math function that parameter not match!"))
 
                                      else raise(Failure("Undefined ID : "^ id ^ "is used!"))
 
@@ -179,7 +215,7 @@ let check_func_body_valid func env=
 		          |Expr(expr) -> let idl=valid_expr funcformal expr id_list mathf_list env in f idl mathf_list stmt_tl 
 
                           |Math_func(mfname, paralist ,expr) ->let _= check_math_func_name_valid mfname mathf_list id_list funcformal env in
-                                                                 let _= check_math_func_para_valid mfname  mathf_list id_list funcformal env paralist in
+                                                                (* let _= check_math_func_para_valid mfname  mathf_list id_list funcformal env paralist in*)
                                                                    let _=check_math_para_duplicate paralist in
                                                                      let _= check_math_func_body_valid mfname paralist id_list mathf_list env expr in 
                                                                         let mathf_list=(mfname, paralist)::mathf_list 
@@ -200,7 +236,7 @@ let check_func_body_valid func env=
 
                           |Block(stmtlist) -> (f id_list mathf_list stmtlist) && (f id_list mathf_list stmt_tl)
               
-         in f [] [] stmt_lt
+         in f func.formals [] stmt_lt
 
 
 
