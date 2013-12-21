@@ -1,15 +1,16 @@
 open Ast
 
 (* is to be modified according to the AST*)
+
 type env = {
 	mutable functions : func_decl list;
 }
 	
-(* It is used to test whether a function's name is equal to a string 'name'*)
+(* a function to test whether a function's name is equal to a string 'name'*)
 let func_equal_name name = function
 	| func -> func.fname = name
 	
-(* This function is to check whether a function's name has been defined more than once*)
+(* a function to check whether a function's name has been defined more than once*)
 let fun_exist func env = 
 	let name = func.fname in
 	   try
@@ -18,10 +19,10 @@ let fun_exist func env =
 					     raise (Failure e)
 			with Not_found -> false
 			
-(*This function is to check whether a function's name exist in the env*)
+(*a function to check whether a function's name exist in the env*)
 let exist_func_name name env = List.exists (func_equal_name name) env.functions
 
-(*This function will directly give you the function object if you give its name*)
+(*a function to return the function object if you give its name*)
 let get_func_by_name name env = 
 	try
 		   let result = List.find (func_equal_name name) env.functions in
@@ -45,7 +46,7 @@ let check_fpara_duplicate func =
 	List.map (count_fpara func) func.formals
 
 
-(* check whether there is a main function*)
+(* a function to check whether there is a main function*)
 let exists_main env = 
 	if exist_func_name "main" env
 	   then true else raise(Failure("No Main Function exist!"))
@@ -168,6 +169,7 @@ let rec valid_expr funcformal expr id_list mathf_list env=
              |_ -> id_list 
         
 
+(*a function to check whether the body of math funtion is valid*)   
 let rec check_math_func_body_valid mfname paralist id_list mathf_list env expr=
              match expr with
                  |Id(id)  -> if (exist_id id id_list || exist_id id paralist)
@@ -202,7 +204,7 @@ let rec check_math_func_body_valid mfname paralist id_list mathf_list env expr=
                  |_ -> true
 
 
-
+(*a function to check whether the expr in output is valid*)   
 let rec check_output_valid paralist id_list mathf_list env expr=
              match expr with
                  |Id(id)  -> if (exist_id id id_list || exist_id id paralist || exist_mathf id mathf_list)
@@ -232,7 +234,7 @@ let rec check_output_valid paralist id_list mathf_list env expr=
                                         Id(id1)  ->  if exist_mathf id1 mathf_list then 
                                                                     ( match e2 with 
                                                                               Id(id2)  ->  let (m1,p1)= get_math_fun_by_name id1 mathf_list in
-                                                                                           if exist_id id2 p1 then true                                                                                           else raise(Failure("Derivation is not properly used!"))
+                                                                                           if exist_id id2 p1 then true                                                                                                                                                             else raise(Failure("Derivation is not properly used!"))
                                                                                            
                                                                              | _ -> raise(Failure("Derivation is not properly used!"))
                                                                     )
@@ -306,16 +308,16 @@ let check_func_body_valid func env=
 
 
 
-(*THis will check each function's validity*)
+(*a function to check each function's validity*)
 let check_func f env =
 		let _dup_name = fun_exist f env in
                    let _ = env.functions <- (f) ::env.functions in
 		       let _dup_formals = check_fpara_duplicate f in
 				   let _vbody = check_func_body_valid f env in
-						  							    true
+		                            true
 
          
-         
+(*The final function to check the program*)         
 let check_program fun_list = 
         let env = {functions = [];} in
 	    let _dovalidation = List.map (fun f -> check_func f env) fun_list in
